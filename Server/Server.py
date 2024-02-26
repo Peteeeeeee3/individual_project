@@ -1,36 +1,64 @@
-# echo-server.py
+# class Message:
+#     # store message structure and handle message creation
+#     pass
+
+
+# class Trade:
+#     # use to handle trades
+#     # stores the progress and interactions of users
+#     # using this will not stop server when waiting for a response
+#     pass
+
 
 import socket
-
-HOST = "127.0.0.1"  # Standard loopback interface address (localhost)
-PORT = 65432  # Port to listen on (non-privileged ports are > 1023)
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print(f"Connected by {addr}")
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            conn.sendall(data)
-
-class Connection:
-    # might not need this
-    # can likely just use a message backlog to handle requests from multiple clients
-    # thinking for this was to have a Connection thread for each actuall connection, but this might not work as intended 
-    # and may also be overkill and inefficient
-    pass
+import threading
+import pymongo
 
 
-class Message:
-    # store message structure and handle message creation
-    pass
+db_client = pymongo.MongoClient("mongodb+srv://farkaspeter2001:T5YY8ln4FJSVg1Ok@indivproj.4twcz60.mongodb.net/")
+db = db_client['IndivProj']
 
-class Trade:
-    # use to handle trades
-    # stores the progress and interactions of users
-    # using this will not stop server when waiting for a response
-    pass
+active_trade = []
+
+
+# Function to handle client connections
+def handle_client(client_socket, addr):
+    print(f"[NEW CONNECTION] {addr} connected.")
+
+    while True:
+        # Receive data from the client
+        data = client_socket.recv(1024).decode('utf-8')
+        if not data:
+            break  # If no data received, break the loop
+
+        print(f"[{addr}] {data}")
+
+        # Echo back the received data
+        client_socket.send(bytes(data, 'utf-8'))
+
+    # Close the connection when done
+    client_socket.close()
+    print(f"[DISCONNECTED] {addr} disconnected.")
+
+# Server configuration
+HOST = '127.0.0.1'  # localhost
+PORT = 20111
+
+# Create a socket object
+server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+# Bind the socket to the host and port
+server_socket.bind((HOST, PORT))
+
+# Listen for incoming connections
+server_socket.listen()
+
+print(f"[LISTENING] Server is listening on {HOST}:{PORT}")
+
+while True:
+    # Accept incoming connection
+    client_socket, addr = server_socket.accept()
+
+    # Create a new thread to handle the client
+    client_thread = threading.Thread(target=handle_client, args=(client_socket, addr))
+    client_thread.start()

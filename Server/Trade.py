@@ -1,0 +1,1 @@
+# Figure out the steps to completing a trade

@@ -26,6 +26,11 @@
 # Visual Studio cache directory
 .vs/
 
+# Package cache
+PackageCache/
+Artifacts/
+CachedNodeOutput/
+
 # Gradle cache directory
 .gradle/
 
