@@ -1,0 +1,5 @@
+C:/Users/farka/OneDrive/Documents/Uni Modules/Individual Project/Code/individual_project/Client/NFCIndivProj/.utmp/Debug/3h6w1f4i/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/farka/OneDrive/Documents/Uni Modules/Individual Project/Code/individual_project/Client/NFCIndivProj/.utmp/Debug/3h6w1f4i/arm64-v8a/CMakeFiles/rebuild_cache.dir
+C:/Users/farka/OneDrive/Documents/Uni Modules/Individual Project/Code/individual_project/Client/NFCIndivProj/.utmp/Debug/3h6w1f4i/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/farka/OneDrive/Documents/Uni Modules/Individual Project/Code/individual_project/Client/NFCIndivProj/.utmp/Debug/3h6w1f4i/arm64-v8a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/farka/OneDrive/Documents/Uni Modules/Individual Project/Code/individual_project/Client/NFCIndivProj/.utmp/Debug/3h6w1f4i/arm64-v8a/FramePacing/CMakeFiles/rebuild_cache.dir
