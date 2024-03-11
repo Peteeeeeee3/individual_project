@@ -17,6 +17,8 @@ public class NFCHandler : MonoBehaviour
     private TextMeshProUGUI DebugText4;
     [SerializeField]
     private TextMeshProUGUI DebugText5;
+    [SerializeField]
+    private NFCMessanger NfcMessanger;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +43,9 @@ public class NFCHandler : MonoBehaviour
 
         // register Instance_OnNDEFDiscovered() to be registered to be called when NFC tag with NDEF format is detected
         NFC.Instance.OnNdefDiscovered += Instance_OnNDEFDiscovered;
+
+        // register with NFC Messanger
+        NfcMessanger.NfcHandler = this;
     }
 
     // Update is called once per frame
@@ -67,6 +72,7 @@ public class NFCHandler : MonoBehaviour
             }
             debugText3 = StringToASCII(debugText3);
             DebugText3.SetText(debugText3);
+            OnUpdateMessanger(debugText3);
         }
     }
 
@@ -77,7 +83,7 @@ public class NFCHandler : MonoBehaviour
     /// </summary>
     /// <param name="hexString">string of hexadecimal characters</param>
     /// <returns>ASCII string</returns>
-    public static string StringToASCII(string hexString)
+    private static string StringToASCII(string hexString)
     {
         try
         {
@@ -92,5 +98,22 @@ public class NFCHandler : MonoBehaviour
         }
         catch (Exception ex) { Console.WriteLine(ex.Message); }
         return string.Empty;
+    }
+
+    private void OnUpdateMessanger(string id)
+    {
+        NfcMessanger.ID = id;
+        //NfcMessanger.playerType = ;
+        //NfcMessanger.activePlayerModel = ;
+    }
+
+    /// <summary>
+    /// Validates the figure for use
+    /// </summary>
+    /// <returns></returns>
+    public bool ValidateFigure()
+    {
+        // TODO: validate figure with server/db
+        return false;
     }
 }
