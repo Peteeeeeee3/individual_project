@@ -22,6 +22,7 @@ public class LoginScreen : MonoBehaviour
         {
             Connection.Connect(out connSuccess);
         }
+        Connection.Subscribe("LOGINSCREEN", this);
     }
 
     // Update is called once per frame
@@ -40,6 +41,19 @@ public class LoginScreen : MonoBehaviour
             // validate user
             string message = "VALIDATE USER" + "\n" + UsernameInput.text + "\n" + PasswordInput.text;
             Connection.QueueMessage(message);
+        }
+    }
+
+
+    public void OnUserValidated(bool success, string userId)
+    {
+        if (success)
+        {
+
+        }
+        else
+        {
+            // prompt an error popup
         }
     }
 

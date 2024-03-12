@@ -10,6 +10,7 @@
 #     pass
 
 
+import queue
 import socket
 import threading
 import pymongo
@@ -21,22 +22,28 @@ db = db_client['IndivProj']
 
 active_trade = []
 
+messageQueue = queue.Queue()
+
 
 #########################################
 # Function to validate user             #
 #########################################
 def validate_user(message):
-    user = dict(db.Users.find_one({"username": message[0]}))
-    if (user['password'] == message[1]):
-        return "VALID\n" + user['_id']
-    return "INVALID"
+    tempUserContainer = db.Users.find_one({"username": message[0]})
+    print(tempUserContainer)
+    if not tempUserContainer == None:
+        user = dict(tempUserContainer)
+        if (user['password'] == message[1]):
+            return "VALID USER\n" + str(user['_id'])
+        
+    return "INVALID USER"
 #########################################
 # Function end                          #
 #########################################
 
 
 #########################################
-# Function to handle client connections #
+# Function to handle incoming messages  #
 #########################################
 def handle_client(client_socket, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
@@ -46,25 +53,54 @@ def handle_client(client_socket, addr):
         if not message:
             break  
 
+        messageQueue.put(message)
         print(f"[{addr}] {message}")
-        
+
+        print(messageQueue)
+#########################################
+# Function end                          #
+#########################################
+    
+
+#########################################
+# Function to remove 0 width blank space#
+#########################################
+def remove_ZWBS(text_array):
+    for i, text in enumerate(text_array):
+        string_encode = text.encode("ascii", "ignore")
+        string_decode = string_encode.decode()
+        text_array[i] = string_decode
+#########################################
+# Function end                          #
+#########################################
+
+
+#########################################
+# Function to handle message responses  #
+#########################################
+def handle_response(client_socket):
+    while True:
+        message = messageQueue.get()
         response = None
 
         # split message into command (first line) and message lines
         messageLines = message.splitlines()
-        firstLine = messageLines[0].split()
+        print(messageLines)
+        remove_ZWBS(messageLines)
         
+        firstLine = messageLines[0].split()
+        print(firstLine)
+
         # handle command
         if (firstLine[0] == "VALIDATE"):
+            print("validate")
             if (firstLine[1] == "USER"):
+                print("user")
                 response = validate_user(messageLines[1:])
+                print("validated " + response)
             
-        # Echo back the received data
+        # Send response
         client_socket.send(bytes(response, 'utf-8'))
-
-    # Close the connection when done
-    client_socket.close()
-    print(f"[DISCONNECTED] {addr} disconnected.")
 #########################################
 # Function end                          #
 #########################################
@@ -89,6 +125,10 @@ while True:
     # Accept incoming connection
     client_socket, addr = server_socket.accept()
 
-    # Create a new thread to handle the client
+    # Thread to handle the client's messages
     client_thread = threading.Thread(target=handle_client, args=(client_socket, addr))
     client_thread.start()
+
+    # Thread to handle responses
+    response_thread = threading.Thread(target=handle_response, args=([client_socket]))
+    response_thread.start()

@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using UnityEditor.PackageManager;
+using UnityEngine;
 
-public class Connection
+public static class Connection
 {
-    private static string serverAddress = "127.0.0.1"; 
+    private static string serverAddress = "127.0.0.1";
     private static int serverPort = 20111;
 
     private static TcpClient client;
     private static Thread receivingThread;
     private static Thread sendingThread;
-
     private static List<string> messageQueue = new List<string>();
-
-    public Connection() { }
+    private static Dictionary<string, MonoBehaviour> subscribers = new Dictionary<string, MonoBehaviour>();
 
     /// <summary>
     /// Connects client side program to the server
@@ -24,7 +22,7 @@ public class Connection
     public static void Connect(out bool success)
     {
         try
-        { 
+        {
             client = new TcpClient();
 
             client.Connect(serverAddress, serverPort);
@@ -60,7 +58,24 @@ public class Connection
                 NetworkStream stream = client.GetStream();
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                Console.WriteLine($"Server: {receivedMessage}");
+
+                // check for successful message reception
+                if (receivedMessage.Length > 0)
+                {
+                    string[] responseLines = receivedMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+
+                    // user validation
+                    if (responseLines[0].Equals("INVALID USER"))
+                    {
+                        subscribers.TryGetValue("LOGINSCREEN", out var loginscreen);
+                        loginscreen.GetComponent<LoginScreen>().OnUserValidated(false, "");
+                    }
+                    else if (responseLines[0].Equals("VALID USER"))
+                    {
+                        subscribers.TryGetValue("LOGINSCREEN", out var loginscreen);
+                        loginscreen.GetComponent<LoginScreen>().OnUserValidated(true, responseLines[1]);
+                    }
+                }
             }
         }
         catch (Exception ex)
@@ -101,11 +116,29 @@ public class Connection
     /// </summary>
     private static void SendMessages()
     {
-        foreach (string message in messageQueue)
+        while (true)
         {
-            NetworkStream stream = client.GetStream();
-            byte[] data = Encoding.UTF8.GetBytes(message);
-            stream.Write(data, 0, data.Length);
+            Console.WriteLine("sending message");
+            foreach (string message in messageQueue)
+            {
+                NetworkStream stream = client.GetStream();
+                byte[] data = Encoding.UTF8.GetBytes(message);
+                Console.WriteLine(data);
+                stream.Write(data, 0, data.Length);
+            }
+
+            // clear message queue once messages are sent
+            messageQueue.Clear();
         }
+    }
+
+    /// <summary>
+    /// Allows for a Monobehaviour class to become a subscriber and act as an observer
+    /// </summary>
+    /// <param name="subscriberName">Used to identify the individual subscriber</param>
+    /// <param name="subscriber">Subscriber to be added</param>
+    public static void Subscribe(string subscriberName, MonoBehaviour subscriber)
+    {
+        subscribers.Add(subscriberName, subscriber);
     }
 }
