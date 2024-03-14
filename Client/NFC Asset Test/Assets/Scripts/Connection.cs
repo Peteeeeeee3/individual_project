@@ -62,25 +62,27 @@ public static class Connection
                 // check for successful message reception
                 if (receivedMessage.Length > 0)
                 {
-                    string[] responseLines = receivedMessage.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    string[] responseLines = receivedMessage.Split(new string[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
 
                     // user validation
                     if (responseLines[0].Equals("INVALID USER"))
                     {
-                        subscribers.TryGetValue("LOGINSCREEN", out var loginscreen);
-                        loginscreen.GetComponent<LoginScreen>().OnUserValidated(false, "");
+                        subscribers.TryGetValue("LOGINSCREEN", out MonoBehaviour monoBehaviour);
+                        LoginScreen loginScreen = (LoginScreen)monoBehaviour;
+                        loginScreen.OnUserValidated(false, "");
                     }
                     else if (responseLines[0].Equals("VALID USER"))
                     {
-                        subscribers.TryGetValue("LOGINSCREEN", out var loginscreen);
-                        loginscreen.GetComponent<LoginScreen>().OnUserValidated(true, responseLines[1]);
+                        subscribers.TryGetValue("LOGINSCREEN", out MonoBehaviour monoBehaviour);
+                        LoginScreen loginScreen = (LoginScreen)monoBehaviour;
+                        loginScreen.OnUserValidated(true, responseLines[1]);
                     }
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in receiving message: {ex.Message}");
+            Debug.Log($"Error in receiving message: {ex.Message}");
         }
     }
 

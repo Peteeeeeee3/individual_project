@@ -107,12 +107,13 @@ def handle_response(client_socket):
 
 
 # Server configuration
-HOST = '127.0.0.1'  # localhost
+HOST = '0.0.0.0'  # localhost
 PORT = 20111
 
 # Create a socket object
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+print(HOST)
 # Bind the socket to the host and port
 server_socket.bind((HOST, PORT))
 

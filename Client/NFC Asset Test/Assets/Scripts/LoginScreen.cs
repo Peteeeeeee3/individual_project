@@ -1,6 +1,7 @@
 using System.IO;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LoginScreen : MonoBehaviour
@@ -14,10 +15,13 @@ public class LoginScreen : MonoBehaviour
     [SerializeField]
     private Button RegisterButton;
 
+    private bool changeScene;
+
     // Start is called before the first frame update
     void Start()
     {
         bool connSuccess = false;
+        changeScene = false;
         while (!connSuccess)
         {
             Connection.Connect(out connSuccess);
@@ -28,7 +32,10 @@ public class LoginScreen : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (changeScene)
+        {
+            SceneManager.LoadScene("GameScene"); // change to main menu, set to game scene for testing
+        }
     }
 
     /// <summary>
@@ -49,7 +56,8 @@ public class LoginScreen : MonoBehaviour
     {
         if (success)
         {
-
+            Globals.ACTIVE_USER_ID = userId;
+            changeScene = true;
         }
         else
         {
