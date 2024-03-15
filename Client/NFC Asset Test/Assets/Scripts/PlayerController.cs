@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public enum PlayerType
 {
@@ -28,40 +29,63 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private NFCMessanger NfcMessanger;
     [SerializeField]
-    private GameObject BulletAsset;
+    private GameObject bulletPrefab;
     [SerializeField]
     private float blueAttackInterval;
     [SerializeField]
     private float greyAttackInterval;
     [SerializeField]
     private float creamAttackInterval;
+    [SerializeField]
+    private GameObject gameNotReadyPanel;
+    [SerializeField]
+    private GameObject radialAttackPrefab;
+    [SerializeField]
+    private float radAttStartSize;
+    [SerializeField]
+    private float radAttEndSize;
+    [SerializeField]
+    private float radAttGrowthRate;
 
     private Transform activePlayerModel;
     private PlayerType activePlayerType;
     private string activePlayerID;
     private float attackTimer = 0;
     private Dictionary<PlayerType, float> timerResetDict;
+    private bool isReady = false;
+    private Transform radialAttack;
 
     // Start is called before the first frame update
     void Start()
     {
+        // REMOVE THIS - START
         activePlayerModel = greyCube; // temp for testing only
-        activePlayerID = "_just_testing_01";
-        activePlayerType = PlayerType.ERROR;
+        activePlayerID = "NFC-GAME-FIGURE-1708202131970";
+        activePlayerType = PlayerType.GREY;
+        // REMOVE THIS - END
         timerResetDict = new Dictionary<PlayerType, float>
         {
             { PlayerType.BLUE, blueAttackInterval },
             { PlayerType.GREY, greyAttackInterval },
             { PlayerType.CREAM, creamAttackInterval }
         };
+        Time.timeScale = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
+        ReadMessanger();
+
+        if (!isReady) { return; }
+
         OnUpdatePlayer();
         OnUpdateCamera();
-        ReadMessanger();
+
+        if (radialAttack)
+        {
+            OnUpdateRadialAttack();
+        }
     }
 
     /// <summary>
@@ -76,7 +100,7 @@ public class PlayerController : MonoBehaviour
 
         // handle attack only if right stick is in use
         Vector3 attackVec = new Vector3(attackJoystick.Horizontal, 0, attackJoystick.Vertical);
-        if (attackVec.magnitude > 0)
+        if (attackVec.magnitude == 0)
         {
             attackVec.Normalize();
 
@@ -95,9 +119,9 @@ public class PlayerController : MonoBehaviour
                         Vector3 normVec = Vector3.Cross(attackVec, new Vector3(0, 1, 0));
                         float bulletOffset = 10;
                         // creat bullets
-                        GameObject bullet1 = Instantiate(BulletAsset, activePlayerModel.position - normVec * bulletOffset, Quaternion.identity);
+                        GameObject bullet1 = Instantiate(bulletPrefab, activePlayerModel.position - normVec * bulletOffset, Quaternion.identity);
                         bullet1.GetComponent<Bullet>().moveDir = attackVec;
-                        GameObject bullet2 = Instantiate(BulletAsset, activePlayerModel.position + normVec * bulletOffset, Quaternion.identity);
+                        GameObject bullet2 = Instantiate(bulletPrefab, activePlayerModel.position + normVec * bulletOffset, Quaternion.identity);
                         bullet2.GetComponent<Bullet>().moveDir = attackVec;
                         break;
                 
@@ -105,6 +129,9 @@ public class PlayerController : MonoBehaviour
                         break;
                 
                     case PlayerType.CREAM:
+                        radialAttack = Instantiate(radialAttackPrefab, activePlayerModel.position - new Vector3(0, 5, 0), Quaternion.identity).GetComponent<Transform>();
+                        radialAttack.position = activePlayerModel.position;
+                        radialAttack.localScale = new Vector3(radAttStartSize, 1, radAttStartSize);
                         break;
 
                     case PlayerType.ERROR:
@@ -114,6 +141,22 @@ public class PlayerController : MonoBehaviour
 
                 attackTimer = 0;
             }
+        }
+    }
+
+    /// <summary>
+    /// Updates the behavious of the radial attack
+    /// </summary>
+    private void OnUpdateRadialAttack()
+    {
+        radialAttack.position = activePlayerModel.position - new Vector3(0, 5, 0);
+        radialAttack.localScale = new Vector3(radialAttack.localScale.x + radAttGrowthRate * Time.deltaTime, 1,
+            radialAttack.localScale.z + radAttGrowthRate * Time.deltaTime);
+
+        if (radialAttack.localScale.x >= radAttEndSize || radialAttack.localScale.z >= radAttEndSize) 
+        { 
+            Destroy(radialAttack.gameObject);
+            radialAttack = null;
         }
     }
 
@@ -131,7 +174,8 @@ public class PlayerController : MonoBehaviour
     private void ReadMessanger()
     {
         // check for detection of a new figure, only numeric part of ID string is unique
-        if (!activePlayerID.Substring(16).Equals(NfcMessanger.ID.Substring(16)))
+        if (!activePlayerID.Substring(16).Equals(NfcMessanger.ID.Substring(16)) &&
+            NfcMessanger.initialized)
         {
             // TODO: validate ID -> break if invalid
             //NfcMessanger.NfcHandler.ValidateFigure();
@@ -161,6 +205,9 @@ public class PlayerController : MonoBehaviour
             {
                 activePlayerID = NfcMessanger.ID;
                 activePlayerType = NfcMessanger.playerType;
+                isReady = true;
+                Time.timeScale = 1;
+                gameNotReadyPanel.GetComponent<RectTransform>().position = new Vector3(100000000, 100000000, 1);
             }
         }
     }

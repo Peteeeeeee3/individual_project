@@ -105,6 +105,7 @@ public class NFCHandler : MonoBehaviour
         NfcMessanger.ID = id;
         //NfcMessanger.playerType = ;
         //NfcMessanger.activePlayerModel = ;
+        if (!NfcMessanger.initialized) { NfcMessanger.initialized = true; }
     }
 
     /// <summary>

@@ -107,7 +107,7 @@ def handle_response(client_socket):
 
 
 # Server configuration
-HOST = '0.0.0.0'  # localhost
+HOST = '127.0.0.1'  # localhost
 PORT = 20111
 
 # Create a socket object
