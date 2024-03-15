@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float radAttGrowthRate;
 
-    private Transform activePlayerModel;
+    public Transform activePlayerModel { get; set; }
     private PlayerType activePlayerType;
     private string activePlayerID;
     private float attackTimer = 0;
@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
 
         // handle attack only if right stick is in use
         Vector3 attackVec = new Vector3(attackJoystick.Horizontal, 0, attackJoystick.Vertical);
-        if (attackVec.magnitude == 0)
+        if (attackVec.magnitude > 0.5)
         {
             attackVec.Normalize();
 
@@ -121,8 +121,12 @@ public class PlayerController : MonoBehaviour
                         // creat bullets
                         GameObject bullet1 = Instantiate(bulletPrefab, activePlayerModel.position - normVec * bulletOffset, Quaternion.identity);
                         bullet1.GetComponent<Bullet>().moveDir = attackVec;
+                        bullet1.GetComponent<Bullet>().damage = 10;
+                        bullet1.GetComponent<Bullet>().ownerTag = "Player";
                         GameObject bullet2 = Instantiate(bulletPrefab, activePlayerModel.position + normVec * bulletOffset, Quaternion.identity);
                         bullet2.GetComponent<Bullet>().moveDir = attackVec;
+                        bullet1.GetComponent<Bullet>().damage = 10;
+                        bullet1.GetComponent<Bullet>().ownerTag = "Player";
                         break;
                 
                     case PlayerType.GREY:
@@ -132,6 +136,7 @@ public class PlayerController : MonoBehaviour
                         radialAttack = Instantiate(radialAttackPrefab, activePlayerModel.position - new Vector3(0, 5, 0), Quaternion.identity).GetComponent<Transform>();
                         radialAttack.position = activePlayerModel.position;
                         radialAttack.localScale = new Vector3(radAttStartSize, 1, radAttStartSize);
+                        radialAttack.GetComponent<RadialAttackAttributes>().damage = 10;
                         break;
 
                     case PlayerType.ERROR:

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5792720866830324980}
   - component: {fileID: 2906299407037451185}
   - component: {fileID: 2010215358646333320}
+  - component: {fileID: 5048415658265245791}
   m_Layer: 0
   m_Name: EnemyViolet
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 7703003484287247555}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.71, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -53,8 +54,8 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 5
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!114 &2010215358646333320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,6 +69,39 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyType: 2
+  player: {fileID: 0}
+  enemyTransform: {fileID: 5792720866830324980}
+  activityRange: 300
+  distanceToKeep: 80
+  movementSpeed: 20
+  damageDealt: 35
+  health: 200
+--- !u!143 &5048415658265245791
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7703003484287247555}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Height: 2
+  m_Radius: 5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 5, z: 0}
 --- !u!1 &8574404235433949749
 GameObject:
   m_ObjectHideFlags: 0
