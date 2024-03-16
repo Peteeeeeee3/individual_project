@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5792720866830324980}
-  - component: {fileID: 2906299407037451185}
   - component: {fileID: 14064246080752715}
   - component: {fileID: 4045212412964740310}
+  - component: {fileID: -2185193446917543206}
   m_Layer: 0
   m_Name: EnemyGreen
   m_TagString: Untagged
@@ -35,27 +35,6 @@ Transform:
   - {fileID: 4301631705639172128}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &2906299407037451185
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7703003484287247555}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 5
-  m_Center: {x: 0, y: 5, z: 0}
 --- !u!114 &14064246080752715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -72,10 +51,13 @@ MonoBehaviour:
   player: {fileID: 0}
   enemyTransform: {fileID: 5792720866830324980}
   activityRange: 500
-  distanceToKeep: 0
+  distanceToKeep: 12
   movementSpeed: 40
   damageDealt: 5
   health: 30
+  attackFrequency: 0.5
+  attackRange: 12
+  bulletPrefab: {fileID: 5301013519591020559, guid: 1a078dd26718d8148887ef014081a889, type: 3}
 --- !u!143 &4045212412964740310
 CharacterController:
   m_ObjectHideFlags: 0
@@ -101,6 +83,27 @@ CharacterController:
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 5, z: 0}
+--- !u!65 &-2185193446917543206
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7703003484287247555}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 10.5, y: 10.5, z: 10.5}
   m_Center: {x: 0, y: 5, z: 0}
 --- !u!1 &8574404235433949749
 GameObject:

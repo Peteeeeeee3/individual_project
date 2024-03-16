@@ -11,6 +11,6 @@ public class NFCMessanger : MonoBehaviour
     {
         initialized = true; // CHANGE THIS TO FALSE WHEN NOT TESTING IN UNITY
         ID = "------------------------------------------------";
-        playerType = PlayerType.CREAM;
+        playerType = PlayerType.GREY;
     }
 }

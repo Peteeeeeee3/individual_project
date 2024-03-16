@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
 
 public enum EnemyType
@@ -27,11 +27,17 @@ public class Enemy : MonoBehaviour
     private float damageDealt;
     [SerializeField]
     private float health;
+    [SerializeField]
+    private float attackFrequency;
+    [SerializeField]
+    private float attackRange;
+    [SerializeField]
+    private GameObject bulletPrefab;
 
-    private List<Vector3> path = new List<Vector3>();
     private float radialAttackImmunityTimer = 0;
-    private bool isTimerCounting = false;
+    private bool isImmunityTimerCounting = false;
     private float radialAttackImmunityDuration = 1;
+    private float attackTimer = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -43,6 +49,8 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         OnUpdateMovement();
+
+        attackTimer += Time.deltaTime;
 
         switch (enemyType)
         {
@@ -65,15 +73,20 @@ public class Enemy : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        if (isTimerCounting)
+        if (isImmunityTimerCounting)
         {
             radialAttackImmunityTimer += Time.deltaTime;
             
             if (radialAttackImmunityTimer > radialAttackImmunityDuration)
             {
                 radialAttackImmunityTimer = 0;
-                isTimerCounting = false;
+                isImmunityTimerCounting = false;
             }
+        }
+
+        if (attackTimer >= attackFrequency)
+        {
+            attackTimer = 0;
         }
     }
 
@@ -82,7 +95,11 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void OnUpdateGreen()
     {
-
+        if (GetDistance(enemyTransform.position, player.GetComponent<PlayerController>().activePlayerModel.position) <= attackRange && 
+            attackTimer >= attackFrequency)
+        {
+            player.GetComponent<PlayerController>().TakeDamage(damageDealt);
+        }
     }
 
     /// <summary>
@@ -90,7 +107,19 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void OnUpdateRed()
     {
-
+        if (GetDistance(enemyTransform.position, player.GetComponent<PlayerController>().activePlayerModel.position) <= attackRange && 
+            attackTimer >= attackFrequency)
+        {
+            GameObject bulletGO = Instantiate(bulletPrefab, new Vector3(enemyTransform.position.x, 5, enemyTransform.position.z), Quaternion.identity);
+            Bullet bullet = bulletGO.GetComponent<Bullet>();
+            var tempMoveDir = (player.GetComponent<PlayerController>().activePlayerModel.position - enemyTransform.position).normalized;
+            tempMoveDir.y = 0;
+            bullet.moveDir = tempMoveDir;
+            bullet.damage = damageDealt;
+            bullet.ownerTag = "Enemy";
+            bullet.isGrenade = false;
+            bulletGO.transform.localScale *= 3;
+        }
     }
 
     /// <summary>
@@ -98,7 +127,30 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void OnUpdateViolet()
     {
+        if (GetDistance(enemyTransform.position, player.GetComponent<PlayerController>().activePlayerModel.position) <= attackRange &&
+            attackTimer >= attackFrequency)
+        {
+            int radius = 15;
+            int numBullets = 16;
+            float angleInterval = 360 / numBullets;
+            float angle = 0;
 
+            for (int i = 0; i < numBullets; i++)
+            {
+                float x = enemyTransform.position.x + radius * Mathf.Cos(angle * Mathf.Deg2Rad);
+                float z = enemyTransform.position.z + radius * Mathf.Sin(angle * Mathf.Deg2Rad);
+
+                Vector3 bulletPos = new Vector3(x, 5, z); // as always, height 5
+                GameObject bulletGO = Instantiate(bulletPrefab, bulletPos, Quaternion.identity);
+                Bullet bullet = bulletGO.GetComponent<Bullet>();
+                bullet.moveDir = (bulletPos - new Vector3(enemyTransform.position.x, 5, enemyTransform.position.z)).normalized;
+                bullet.damage = damageDealt;
+                bullet.ownerTag = "Enemy";
+                bullet.isGrenade = false;
+
+                angle += angleInterval;
+            }
+        }
     }
 
     /// <summary>
@@ -121,12 +173,11 @@ public class Enemy : MonoBehaviour
             {
                 enemyTransform.GetComponent<CharacterController>().Move(moveVec * movementSpeed * Time.deltaTime);
             }
-        }
 
-        if (path.Count > 0)
-        {
-            transform.position = path[0];
-            path.RemoveAt(0);
+            if (enemyTransform.position.y > 0) 
+            { 
+                enemyTransform.position = new Vector3(enemyTransform.position.x, 0, enemyTransform.position.z);
+            }
         }
     }
 
@@ -136,22 +187,26 @@ public class Enemy : MonoBehaviour
     /// <param name="other">Object colliding with</param>
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag.Equals("Player"))
+        if (other.gameObject.tag.Equals("Bullet"))
         {
-            // deal damage
-        }
-        else if (other.gameObject.tag.Equals("Bullet"))
-        {
-            if (other.GetComponent<Bullet>().ownerTag.Equals("Player"))
+            Bullet bullet = other.GetComponent<Bullet>();
+            if (bullet.ownerTag.Equals("Player"))
             {
-                health -= other.GetComponent<Bullet>().damage;
-                Destroy(other.gameObject);
+                if (!bullet.isGrenade)
+                {
+                    health -= other.GetComponent<Bullet>().damage;
+                    Destroy(other.gameObject);
+                }
+                else
+                {
+                    bullet.Explode();
+                }
             }
         }
         else if (other.gameObject.tag.Equals("Radial Attack"))
         {
             health -= other.GetComponent<RadialAttackAttributes>().damage;
-            isTimerCounting = true;
+            isImmunityTimerCounting = true;
         }
     }
 
@@ -164,5 +219,14 @@ public class Enemy : MonoBehaviour
     private float GetDistance(Vector3 A, Vector3 B)
     {
         return (A - B).magnitude;
+    }
+
+    /// <summary>
+    /// Returns enemy type
+    /// </summary>
+    /// <returns>Enemy type</returns>
+    public EnemyType GetEnemyType()
+    {
+        return enemyType;
     }
 }

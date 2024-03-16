@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -47,6 +48,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float radAttGrowthRate;
 
+    // DEBUG
+    [SerializeField]
+    private TextMeshProUGUI DebugText5;
+    //
+
+    public float health { get; set; }
     public Transform activePlayerModel { get; set; }
     private PlayerType activePlayerType;
     private string activePlayerID;
@@ -62,6 +69,7 @@ public class PlayerController : MonoBehaviour
         activePlayerModel = greyCube; // temp for testing only
         activePlayerID = "NFC-GAME-FIGURE-1708202131970";
         activePlayerType = PlayerType.GREY;
+        health = 200;
         // REMOVE THIS - END
         timerResetDict = new Dictionary<PlayerType, float>
         {
@@ -86,6 +94,8 @@ public class PlayerController : MonoBehaviour
         {
             OnUpdateRadialAttack();
         }
+
+        DebugText5.SetText("Health: " + health);
     }
 
     /// <summary>
@@ -97,6 +107,12 @@ public class PlayerController : MonoBehaviour
         Vector3 moveVec = new Vector3(movementJoystick.Horizontal, 0, movementJoystick.Vertical);
         moveVec.Normalize();
         activePlayerModel.GetComponent<CharacterController>().Move(moveVec * moveSpeed * Time.deltaTime);
+        
+        // make sure player is always on the ground
+        if (activePlayerModel.position.y != 5)
+        {
+            activePlayerModel.position = new Vector3(activePlayerModel.position.x, 5, activePlayerModel.position.z);
+        }
 
         // handle attack only if right stick is in use
         Vector3 attackVec = new Vector3(attackJoystick.Horizontal, 0, attackJoystick.Vertical);
@@ -120,21 +136,31 @@ public class PlayerController : MonoBehaviour
                         float bulletOffset = 10;
                         // creat bullets
                         GameObject bullet1 = Instantiate(bulletPrefab, activePlayerModel.position - normVec * bulletOffset, Quaternion.identity);
-                        bullet1.GetComponent<Bullet>().moveDir = attackVec;
-                        bullet1.GetComponent<Bullet>().damage = 10;
-                        bullet1.GetComponent<Bullet>().ownerTag = "Player";
+                        Bullet bulletComp1 = bullet1.GetComponent<Bullet>();
+                        bulletComp1.moveDir = attackVec;
+                        bulletComp1.damage = 10;
+                        bulletComp1.ownerTag = "Player";
+                        bulletComp1.isGrenade = false;
                         GameObject bullet2 = Instantiate(bulletPrefab, activePlayerModel.position + normVec * bulletOffset, Quaternion.identity);
-                        bullet2.GetComponent<Bullet>().moveDir = attackVec;
-                        bullet1.GetComponent<Bullet>().damage = 10;
-                        bullet1.GetComponent<Bullet>().ownerTag = "Player";
+                        Bullet bulletComp2 = bullet2.GetComponent<Bullet>();
+                        bulletComp2.moveDir = attackVec;
+                        bulletComp2.damage = 10;
+                        bulletComp2.ownerTag = "Player";
+                        bulletComp2.isGrenade = false;
                         break;
                 
                     case PlayerType.GREY:
+                        // create grenade
+                        GameObject grenade = Instantiate(bulletPrefab, activePlayerModel.position, Quaternion.identity);
+                        Bullet grenadeBullet = grenade.GetComponent<Bullet>();
+                        grenadeBullet.moveDir = attackVec;
+                        grenadeBullet.damage = 40;
+                        grenadeBullet.ownerTag = "Player";
+                        grenadeBullet.isGrenade = true;
                         break;
                 
                     case PlayerType.CREAM:
-                        radialAttack = Instantiate(radialAttackPrefab, activePlayerModel.position - new Vector3(0, 5, 0), Quaternion.identity).GetComponent<Transform>();
-                        radialAttack.position = activePlayerModel.position;
+                        radialAttack = Instantiate(radialAttackPrefab, activePlayerModel.position - new Vector3(0, 3, 0), Quaternion.identity).GetComponent<Transform>();
                         radialAttack.localScale = new Vector3(radAttStartSize, 1, radAttStartSize);
                         radialAttack.GetComponent<RadialAttackAttributes>().damage = 10;
                         break;
@@ -154,7 +180,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void OnUpdateRadialAttack()
     {
-        radialAttack.position = activePlayerModel.position - new Vector3(0, 5, 0);
+        radialAttack.position = activePlayerModel.position - new Vector3(0, 3, 0);
         radialAttack.localScale = new Vector3(radialAttack.localScale.x + radAttGrowthRate * Time.deltaTime, 1,
             radialAttack.localScale.z + radAttGrowthRate * Time.deltaTime);
 
@@ -215,5 +241,14 @@ public class PlayerController : MonoBehaviour
                 gameNotReadyPanel.GetComponent<RectTransform>().position = new Vector3(100000000, 100000000, 1);
             }
         }
+    }
+
+    /// <summary>
+    /// Inflict damage to player
+    /// </summary>
+    /// <param name="damage">how much damage to concede</param>
+    public void TakeDamage(float damage)
+    {
+        health -= damage;
     }
 }

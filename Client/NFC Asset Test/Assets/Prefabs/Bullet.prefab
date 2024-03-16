@@ -132,6 +132,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Velocity: 70
   BulletTransform: {fileID: 5012198327649725742}
+  ExplosionPrefab: {fileID: 4067632283919052738, guid: bb464edae6b52ab4b8d60819add81e23, type: 3}
+  expAttStartSize: 0
+  expAttFinalSize: 1
+  expAttGrowthRate: 3
+  ttl: 1
 --- !u!135 &3268424794233836304
 SphereCollider:
   m_ObjectHideFlags: 0

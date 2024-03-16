@@ -24,7 +24,14 @@ public class Wall : MonoBehaviour
     {
         if (other.gameObject.tag.Equals("Bullet"))
         {
-            Destroy(other.gameObject);
+            if (!other.GetComponent<Bullet>().isGrenade)
+            {
+                Destroy(other.gameObject);
+            }
+            else
+            {
+                other.GetComponent<Bullet>().Explode();
+            }
         }
     }
 }

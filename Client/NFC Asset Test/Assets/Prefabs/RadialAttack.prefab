@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 626118701912048030}
   - component: {fileID: 2928505079201327042}
   - component: {fileID: 242719641291214718}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Middle Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 3905216409797823420}
   - component: {fileID: 2286132750737718436}
   - component: {fileID: 8314336127154670099}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Inside Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ GameObject:
   - component: {fileID: 6871022518758225513}
   - component: {fileID: 3874313170288996932}
   - component: {fileID: 7884441367112634858}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: RadialAttack
   m_TagString: Radial Attack
   m_Icon: {fileID: 0}
@@ -234,7 +234,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
@@ -255,9 +255,9 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 72
+    m_Bits: 64
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -276,7 +276,7 @@ GameObject:
   - component: {fileID: 6561026299020020003}
   - component: {fileID: 5503114904779097447}
   - component: {fileID: 5885258915111203914}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Outside Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
