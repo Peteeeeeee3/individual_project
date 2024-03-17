@@ -14,8 +14,6 @@ public class NFCHandler : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI DebugText3;
     [SerializeField]
-    private TextMeshProUGUI DebugText4;
-    [SerializeField]
     private NFCMessanger NfcMessanger;
 
     // Start is called before the first frame update
@@ -100,6 +98,8 @@ public class NFCHandler : MonoBehaviour
 
     private void OnUpdateMessanger(string id)
     {
+
+
         NfcMessanger.ID = id;
         //NfcMessanger.playerType = ;
         //NfcMessanger.activePlayerModel = ;

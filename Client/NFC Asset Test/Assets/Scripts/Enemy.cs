@@ -34,6 +34,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private GameObject bulletPrefab;
 
+    public LevelManager levelManager { get; set; }
     private float radialAttackImmunityTimer = 0;
     private bool isImmunityTimerCounting = false;
     private float radialAttackImmunityDuration = 1;
@@ -70,6 +71,10 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {
+            if (levelManager)
+            {
+                levelManager.removeRequiredEnemy(this);
+            }
             Destroy(this.gameObject);
         }
 

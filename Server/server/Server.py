@@ -80,6 +80,9 @@ def remove_ZWBS(text_array):
 #########################################
 def handle_response(client_socket):
     while True:
+        if (messageQueue.empty):
+            continue
+        
         message = messageQueue.get()
         response = None
 
@@ -98,7 +101,10 @@ def handle_response(client_socket):
                 print("user")
                 response = validate_user(messageLines[1:])
                 print("validated " + response)
-            
+
+        if response == None:
+            continue    
+
         # Send response
         client_socket.send(bytes(response, 'utf-8'))
 #########################################
@@ -107,7 +113,7 @@ def handle_response(client_socket):
 
 
 # Server configuration
-HOST = '127.0.0.1'  # localhost
+HOST = '0.0.0.0'  # localhost
 PORT = 20111
 
 # Create a socket object

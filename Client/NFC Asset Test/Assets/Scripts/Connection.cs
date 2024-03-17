@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class Connection
 {
-    private static string serverAddress = "127.0.0.1";
+    private static string serverAddress = "34.77.184.42";
     private static int serverPort = 20111;
 
     private static TcpClient client;

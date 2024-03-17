@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
     [SerializeField]
     private List<Enemy> enemies = new List<Enemy>();
@@ -9,38 +11,38 @@ public class NewBehaviourScript : MonoBehaviour
     private Material outline;
     [SerializeField]
     private int highlightedEnemyCount;
+    [SerializeField]
+    private TextMeshProUGUI DebugText4;
 
     private List<Enemy> highlightedEnemies = new List<Enemy>();
 
     // Start is called before the first frame update
     void Start()
     {
+        // add this instance to all enemies
+        foreach (var enemy in enemies)
+        {
+            enemy.levelManager = this;
+        }
+
+        // highlight random enemies
         System.Random random = new System.Random();
          
         for (int i = 0; i < highlightedEnemyCount; i++)
         {
             int pos = random.Next(0, enemies.Count - 1);
 
-            while (!enemies[pos])
-            {
-                pos = random.Next(0, enemies.Count - 1);
-            }    
-
             Enemy enemy = enemies[pos];
             AddHighlight(enemy);
             highlightedEnemies.Add(enemy);
-
-            if (enemies.Count > 1)
-            {
-                enemies.Remove(enemy);
-            }
+            enemies.Remove(enemy);
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        DebugText4.SetText("Required Enemies Left: " + highlightedEnemies.Count + "       Enemies Left: " + enemies.Count);
     }
 
     /// <summary>
@@ -67,5 +69,14 @@ public class NewBehaviourScript : MonoBehaviour
                 Debug.Log("Error enemy type");
                 return;
         }
+    }
+
+    /// <summary>
+    /// Removes enemy from lists
+    /// </summary>
+    public void removeRequiredEnemy(Enemy enemy)
+    {
+        if (enemies.Contains(enemy)) { enemies.Remove(enemy); } 
+        if (highlightedEnemies.Contains(enemy)) { highlightedEnemies.Remove(enemy); }
     }
 }

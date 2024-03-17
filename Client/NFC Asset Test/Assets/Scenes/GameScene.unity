@@ -16334,6 +16334,7 @@ MonoBehaviour:
   - {fileID: 988212184}
   outline: {fileID: 2100000, guid: acd8f714506fd6540a36a074eb7f1491, type: 2}
   highlightedEnemyCount: 25
+  DebugText4: {fileID: 995369300}
 --- !u!1 &1455594082
 GameObject:
   m_ObjectHideFlags: 0
@@ -18139,7 +18140,6 @@ MonoBehaviour:
   DebugText1: {fileID: 1682765677}
   DebugText2: {fileID: 1906591349}
   DebugText3: {fileID: 383628548}
-  DebugText4: {fileID: 995369300}
   NfcMessanger: {fileID: 1637926874}
 --- !u!4 &1637926873
 Transform:

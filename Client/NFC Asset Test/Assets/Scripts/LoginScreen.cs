@@ -1,36 +1,61 @@
 using TMPro;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static System.Net.Mime.MediaTypeNames;
 
 public class LoginScreen : MonoBehaviour
 {
     [SerializeField]
-    private TextMeshProUGUI UsernameInput;
+    private RectTransform UsernameInput;
     [SerializeField]
-    private TextMeshProUGUI PasswordInput;
+    private Vector3 UsernameInputPos;
+    [SerializeField]
+    private RectTransform PasswordInput;
+    [SerializeField]
+    private Vector3 PasswordInputPos;
     [SerializeField]
     private Button LoginButton;
     [SerializeField]
+    private Vector3 LoginButtonPos;
+    [SerializeField]
     private Button RegisterButton;
+    [SerializeField]
+    private Vector3 RegisterButtonPos;
+    [SerializeField]
+    private TextMeshProUGUI ConnectingText;
 
     private bool changeScene;
+    private bool connSuccess;
+    private Vector3 outOfBoundPos = new Vector3(1000000, 1000000, 1000000);
 
     // Start is called before the first frame update
     void Start()
     {
-        bool connSuccess = false;
+        connSuccess = false;
         changeScene = false;
-        while (!connSuccess)
-        {
-            Connection.Connect(out connSuccess);
-        }
-        Connection.Subscribe("LOGINSCREEN", this);
+        UsernameInput.GetComponent<RectTransform>().position = outOfBoundPos;
+        PasswordInput.GetComponent<RectTransform>().position = outOfBoundPos;
+        LoginButton.GetComponent<RectTransform>().position = outOfBoundPos;
+        RegisterButton.GetComponent<RectTransform>().position = outOfBoundPos;
+        Thread thread = new Thread(() => Connection.Connect(out connSuccess));
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (connSuccess)
+        {
+            Connection.Subscribe("LOGINSCREEN", this);
+
+            UsernameInput.GetComponent<RectTransform>().position = UsernameInputPos;
+            PasswordInput.GetComponent<RectTransform>().position = PasswordInputPos;
+            LoginButton.GetComponent<RectTransform>().position = LoginButtonPos;
+            RegisterButton.GetComponent<RectTransform>().position = RegisterButtonPos;
+            ConnectingText.GetComponent<RectTransform>().position = outOfBoundPos;
+        }
+
         if (changeScene)
         {
             SceneManager.LoadScene("GameScene"); // change to main menu, set to game scene for testing
@@ -42,10 +67,10 @@ public class LoginScreen : MonoBehaviour
     /// </summary>
     public void OnLoginClicked()
     {
-        if (UsernameInput.text.Length > 0 && PasswordInput.text.Length > 0)
+        if (UsernameInput.GetComponent<TextMeshProUGUI>().text.Length > 0 && PasswordInput.GetComponent<TextMeshProUGUI>().text.Length > 0)
         {
             // validate user
-            string message = "VALIDATE USER" + "\n" + UsernameInput.text + "\n" + PasswordInput.text;
+            string message = "VALIDATE USER" + "\n" + UsernameInput.GetComponent<TextMeshProUGUI>().text + "\n" + PasswordInput.GetComponent<TextMeshProUGUI>().text;
             Connection.QueueMessage(message);
         }
     }
