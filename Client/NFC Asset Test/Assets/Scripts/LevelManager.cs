@@ -55,7 +55,7 @@ public class NewBehaviourScript : MonoBehaviour
         switch (enemy.GetEnemyType())
         {
             case EnemyType.GREEN:
-                meshRenderer.material.color = new Color(0, 255, 83, 255);
+                meshRenderer.material.color = new Color(0, 255, 0, 255);
                 break;
             case EnemyType.RED:
                 meshRenderer.material.color = new Color(255, 0, 0, 255);

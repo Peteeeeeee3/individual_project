@@ -169,7 +169,7 @@ public class Enemy : MonoBehaviour
             {
                 enemyTransform.GetComponent<CharacterController>().Move(-moveVec * movementSpeed * Time.deltaTime);
             }
-            else
+            else /*if (GetDistance(enemyTransform.position, enemyTransform.position + moveVec * movementSpeed * Time.deltaTime) > distanceToKeep)*/
             {
                 enemyTransform.GetComponent<CharacterController>().Move(moveVec * movementSpeed * Time.deltaTime);
             }
