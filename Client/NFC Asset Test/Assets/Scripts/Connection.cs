@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public static class Connection
 {
-    private static string serverAddress = "34.77.184.42";
+    private static string serverAddress = "34.79.56.123";
     private static int serverPort = 20111;
 
     private static TcpClient client;

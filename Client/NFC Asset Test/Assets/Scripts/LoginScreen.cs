@@ -28,6 +28,7 @@ public class LoginScreen : MonoBehaviour
 
     private bool changeScene;
     private bool connSuccess;
+    private bool subscribed;
     private Vector3 outOfBoundPos = new Vector3(1000000, 1000000, 1000000);
 
     // Start is called before the first frame update
@@ -35,25 +36,29 @@ public class LoginScreen : MonoBehaviour
     {
         connSuccess = false;
         changeScene = false;
+        subscribed = false;
         UsernameInput.GetComponent<RectTransform>().position = outOfBoundPos;
         PasswordInput.GetComponent<RectTransform>().position = outOfBoundPos;
         LoginButton.GetComponent<RectTransform>().position = outOfBoundPos;
         RegisterButton.GetComponent<RectTransform>().position = outOfBoundPos;
         Thread thread = new Thread(() => Connection.Connect(out connSuccess));
+        thread.Start();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (connSuccess)
+        if (!subscribed && connSuccess)
         {
             Connection.Subscribe("LOGINSCREEN", this);
 
-            UsernameInput.GetComponent<RectTransform>().position = UsernameInputPos;
-            PasswordInput.GetComponent<RectTransform>().position = PasswordInputPos;
-            LoginButton.GetComponent<RectTransform>().position = LoginButtonPos;
-            RegisterButton.GetComponent<RectTransform>().position = RegisterButtonPos;
-            ConnectingText.GetComponent<RectTransform>().position = outOfBoundPos;
+            UsernameInput.GetComponent<RectTransform>().localPosition = UsernameInputPos;
+            PasswordInput.GetComponent<RectTransform>().localPosition = PasswordInputPos;
+            LoginButton.GetComponent<RectTransform>().localPosition = LoginButtonPos;
+            RegisterButton.GetComponent<RectTransform>().localPosition = RegisterButtonPos;
+            ConnectingText.GetComponent<RectTransform>().localPosition = outOfBoundPos;
+
+            subscribed = true;
         }
 
         if (changeScene)
@@ -67,10 +72,34 @@ public class LoginScreen : MonoBehaviour
     /// </summary>
     public void OnLoginClicked()
     {
-        if (UsernameInput.GetComponent<TextMeshProUGUI>().text.Length > 0 && PasswordInput.GetComponent<TextMeshProUGUI>().text.Length > 0)
+        TextMeshProUGUI[] UsernameTexts = UsernameInput.GetComponentsInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI[] PasswordTexts = PasswordInput.GetComponentsInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI usernameText = null;
+        TextMeshProUGUI passwordText = null;
+        
+        foreach (var text in UsernameTexts)
+        {
+            if (text.name.Equals("Text"))
+            {
+                usernameText = text;
+            }
+        }
+
+        foreach (var text in PasswordTexts)
+        {
+            if (text.name.Equals("Text"))
+            {
+                passwordText = text;
+            }
+        }
+
+        if (usernameText &&
+            passwordText &&
+            usernameText.text.Length > 0 && 
+            passwordText.text.Length > 0)
         {
             // validate user
-            string message = "VALIDATE USER" + "\n" + UsernameInput.GetComponent<TextMeshProUGUI>().text + "\n" + PasswordInput.GetComponent<TextMeshProUGUI>().text;
+            string message = "VALIDATE USER" + "\n" + usernameText.text + "\n" + passwordText.text;
             Connection.QueueMessage(message);
         }
     }

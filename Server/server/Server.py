@@ -47,6 +47,7 @@ def validate_user(message):
 #########################################
 def handle_client(client_socket, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
+    print("receiving thread " + str(messageQueue))
 
     while True:
         message = client_socket.recv(1024).decode('utf-8')
@@ -80,33 +81,33 @@ def remove_ZWBS(text_array):
 #########################################
 def handle_response(client_socket):
     while True:
-        if (messageQueue.empty):
-            continue
-        
-        message = messageQueue.get()
-        response = None
+        if (not messageQueue.empty()):
+            message = messageQueue.get()
+            response = None
 
-        # split message into command (first line) and message lines
-        messageLines = message.splitlines()
-        print(messageLines)
-        remove_ZWBS(messageLines)
-        
-        firstLine = messageLines[0].split()
-        print(firstLine)
+            # split message into command (first line) and message lines
+            messageLines = message.splitlines()
+            print(messageLines)
+            remove_ZWBS(messageLines)
+            
+            firstLine = messageLines[0].split()
+            print(firstLine)
 
-        # handle command
-        if (firstLine[0] == "VALIDATE"):
-            print("validate")
-            if (firstLine[1] == "USER"):
-                print("user")
-                response = validate_user(messageLines[1:])
-                print("validated " + response)
+            # handle command
+            if (firstLine[0] == "VALIDATE"):
+                print("validate")
+                if (firstLine[1] == "USER"):
+                    print("user")
+                    response = validate_user(messageLines[1:])
+                    print("validated " + response)
 
-        if response == None:
-            continue    
+            if response == None:
+                continue    
 
-        # Send response
-        client_socket.send(bytes(response, 'utf-8'))
+            # Send response
+            print("Response => " + response)
+            client_socket.send(bytes(response, 'utf-8'))
+            print("Reponse sent!")
 #########################################
 # Function end                          #
 #########################################
