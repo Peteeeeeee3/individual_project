@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -9,6 +10,7 @@ using UnityEngine;
 public static class Connection
 {
     private static string serverAddress = "34.79.56.123";
+    private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;
 
     private static TcpClient client;
@@ -26,7 +28,7 @@ public static class Connection
         {
             client = new TcpClient();
 
-            client.Connect(serverAddress, serverPort);
+            client.Connect(serverIP, serverPort);
             Console.WriteLine($"Connected to server at {serverAddress}:{serverPort}");
 
             receivingThread = new Thread(() => ReceiveMessages(client));
