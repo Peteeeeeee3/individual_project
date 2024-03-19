@@ -77,6 +77,26 @@ def remove_ZWBS(text_array):
 
 
 #########################################
+# Function to handle getting all figures#
+#########################################
+def get_all_figures(message):
+    tempUserContainer = db.Users.find_one({"_id": message[0]})
+    if not tempUserContainer == None:
+        user = dict(tempUserContainer)
+        response = "SUCCESS FIGURES\n"
+        for figure in user['figures']:
+            response += figure['_id'] + "\n" + figure['type'] + "\n"
+            # edit the formatting once figure data is finalised
+
+        return response
+
+    return "ERROR FIGURES"
+#########################################
+# Function end                          #
+#########################################
+
+
+#########################################
 # Function to handle message responses  #
 #########################################
 def handle_response(client_socket):
@@ -100,6 +120,10 @@ def handle_response(client_socket):
                     print("user")
                     response = validate_user(messageLines[1:])
                     print("validated " + response)
+            elif (firstLine[0] == "GET"):
+                print("get")
+                if ((firstLine[1] == "FIGURES")):
+                    response = get_all_figures(messageLines[1:])
 
             if response == None:
                 continue    

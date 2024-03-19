@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public static class Connection
@@ -29,7 +28,7 @@ public static class Connection
             client = new TcpClient();
 
             client.Connect(serverIP, serverPort);
-            Console.WriteLine($"Connected to server at {serverAddress}:{serverPort}");
+            Debug.Log($"Connected to server at {serverAddress}:{serverPort}");
 
             receivingThread = new Thread(() => ReceiveMessages(client));
             receivingThread.Start();
@@ -41,7 +40,7 @@ public static class Connection
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"An error occurred: {ex.Message}");
+            Debug.Log($"An error occurred: {ex.Message}");
             success = false;
         }
     }
@@ -80,6 +79,14 @@ public static class Connection
                         LoginScreen loginScreen = (LoginScreen)monoBehaviour;
                         loginScreen.OnUserValidated(true, responseLines[1]);
                     }
+                    // get figures
+                    else if (responseLines[0].Equals("ERROR FIGURES") ||
+                        responseLines[0].Equals("SUCCESS FIGURES"))
+                    {
+                        subscribers.TryGetValue("MAINMENU", out MonoBehaviour monoBehaviour);
+                        MainMenu mainMenu = (MainMenu)monoBehaviour;
+                        mainMenu.OnAllFiguresReceived(responseLines);
+                    }
                 }
             }
         }
@@ -99,11 +106,11 @@ public static class Connection
             receivingThread.Abort();
             sendingThread.Abort();
             client.Close();
-            Console.WriteLine("Connection closed.");
+            Debug.Log("Connection closed.");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error in closing connection: {ex.Message}");
+            Debug.Log($"Error in closing connection: {ex.Message}");
         }
     }
 
@@ -123,7 +130,6 @@ public static class Connection
     {
         while (true)
         {
-            Console.WriteLine("sending message");
             foreach (string message in messageQueue)
             {
                 NetworkStream stream = client.GetStream();

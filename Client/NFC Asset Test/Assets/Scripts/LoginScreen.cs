@@ -63,7 +63,7 @@ public class LoginScreen : MonoBehaviour
 
         if (changeScene)
         {
-            SceneManager.LoadScene("GameScene"); // change to main menu, set to game scene for testing
+            SceneManager.LoadScene("MainMenu"); // change to main menu, set to game scene for testing
         }
     }
 
@@ -99,7 +99,7 @@ public class LoginScreen : MonoBehaviour
             passwordText.text.Length > 0)
         {
             // validate user
-            string message = "VALIDATE USER" + "\n" + usernameText.text + "\n" + passwordText.text;
+            string message = "VALIDATE USER\n" + usernameText.text + "\n" + passwordText.text;
             Connection.QueueMessage(message);
         }
     }
@@ -125,25 +125,4 @@ public class LoginScreen : MonoBehaviour
     {
 
     }
-    /*
-    private void CreateTempFile()
-    {
-        FileStream fileStream = null;
-        if (!File.Exists(FileLoc))
-        {
-            using (fileStream = File.Create(FileLoc))
-            {
-
-            }
-        }
-
-        // check again to guarantee that no errors occur if 
-        if (File.Exists(FileLoc))
-        {
-            using (StreamWriter writer = new StreamWriter(FileLoc))
-            {
-                string fileContent = UsernameInput.text + "\n" + PasswordInput.text;
-            }
-        }
-    }*/
 }
