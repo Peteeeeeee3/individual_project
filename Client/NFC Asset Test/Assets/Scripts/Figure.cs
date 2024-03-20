@@ -5,14 +5,27 @@ using UnityEngine;
 
 public class Figure
 {
-    public string _id {  get; private set; }
+    public string id {  get; private set; }
     public PlayerType type { get; private set; }
+    public int level { get; private set; }
+    public int exp { get; private set; }
+    public float moveSpeed { get; private set; }
+    public float damage { get; private set; }
+    public float attackRate { get; private set; }
+    public float attackRange { get; private set; }
+    public string name { get; private set; }
 
     public Figure() { }
-    public Figure(string id, PlayerType type)
+    public Figure(string id, PlayerType type, int level, int exp, float moveSpeed, float damage, float attackRate, float attackRange, string name)
     {
-        _id = id;
+        this.id = id;
         this.type = type;
-        // add all of the stats
+        this.level = level;
+        this.exp = exp;
+        this.moveSpeed = moveSpeed;
+        this.damage = damage;
+        this.attackRate = attackRate;
+        this.attackRange = attackRange;
+        this.name = name;
     }
 }

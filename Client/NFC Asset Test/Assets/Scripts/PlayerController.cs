@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public enum PlayerType
 {
@@ -196,7 +195,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void OnUpdateCamera()
     {
-        cam.position = new Vector3(activePlayerModel.position.x, cam.position.y, activePlayerModel.position.z);
+        cam.position = new Vector3(activePlayerModel.position.x, cam.position.y, activePlayerModel.position.z - 20);
+        cam.LookAt(activePlayerModel.position);
     }
 
     /// <summary>

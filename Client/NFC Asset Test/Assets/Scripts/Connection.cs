@@ -8,14 +8,14 @@ using UnityEngine;
 
 public static class Connection
 {
-    private static string serverAddress = "34.79.56.123";
+    private static string serverAddress = "127.0.0.1";
     private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;
 
     private static TcpClient client;
     private static Thread receivingThread;
     private static Thread sendingThread;
-    private static List<string> messageQueue = new List<string>();
+    private static Queue<string> messageQueue = new Queue<string>();
     private static Dictionary<string, MonoBehaviour> subscribers = new Dictionary<string, MonoBehaviour>();
 
     /// <summary>
@@ -120,7 +120,7 @@ public static class Connection
     /// <param name="message">Message to be added to queue</param>
     public static void QueueMessage(string message)
     {
-        messageQueue.Add(message);
+        messageQueue.Enqueue(message);
     }
 
     /// <summary>
@@ -130,16 +130,13 @@ public static class Connection
     {
         while (true)
         {
-            foreach (string message in messageQueue)
+            if (messageQueue.Count > 0)
             {
+                string message = messageQueue.Dequeue();
                 NetworkStream stream = client.GetStream();
                 byte[] data = Encoding.UTF8.GetBytes(message);
-                Console.WriteLine(data);
                 stream.Write(data, 0, data.Length);
             }
-
-            // clear message queue once messages are sent
-            messageQueue.Clear();
         }
     }
 

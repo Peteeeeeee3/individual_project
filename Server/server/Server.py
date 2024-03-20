@@ -10,10 +10,7 @@
 #     pass
 
 
-import queue
-import socket
-import threading
-import pymongo
+import queue, socket, threading, pymongo, bson
 from enum import Enum
 
 
@@ -25,9 +22,9 @@ active_trade = []
 messageQueue = queue.Queue()
 
 
-#########################################
+#!#######################################
 # Function to validate user             #
-#########################################
+#!#######################################
 def validate_user(message):
     tempUserContainer = db.Users.find_one({"username": message[0]})
     print(tempUserContainer)
@@ -37,14 +34,14 @@ def validate_user(message):
             return "VALID USER\n" + str(user['_id'])
         
     return "INVALID USER"
-#########################################
+#?#######################################
 # Function end                          #
-#########################################
+#?#######################################
 
 
-#########################################
+#!#######################################
 # Function to handle incoming messages  #
-#########################################
+#!#######################################
 def handle_client(client_socket, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
     print("receiving thread " + str(messageQueue))
@@ -58,47 +55,55 @@ def handle_client(client_socket, addr):
         print(f"[{addr}] {message}")
 
         print(messageQueue)
-#########################################
+#?#######################################
 # Function end                          #
-#########################################
+#?#######################################
     
 
-#########################################
+#!#######################################
 # Function to remove 0 width blank space#
-#########################################
+#!#######################################
 def remove_ZWBS(text_array):
     for i, text in enumerate(text_array):
         string_encode = text.encode("ascii", "ignore")
         string_decode = string_encode.decode()
         text_array[i] = string_decode
-#########################################
+#?#######################################
 # Function end                          #
-#########################################
+#?#######################################
 
 
-#########################################
+#!#######################################
 # Function to handle getting all figures#
-#########################################
+#!#######################################
 def get_all_figures(message):
-    tempUserContainer = db.Users.find_one({"_id": message[0]})
+    tempUserContainer = db.Users.find_one({"_id": bson.ObjectId(message[0])})
     if not tempUserContainer == None:
         user = dict(tempUserContainer)
         response = "SUCCESS FIGURES\n"
         for figure in user['figures']:
-            response += figure['_id'] + "\n" + figure['type'] + "\n"
+            response +=\
+                figure['_id'] + "\n" +\
+                figure['type'] + "\n" +\
+                str(figure['level']) + "\n" +\
+                str(figure['exp']) + "\n" +\
+                str(figure['move-speed']) + "\n" +\
+                str(figure['damage']) + "\n" +\
+                str(figure['attack-rate']) + "\n" +\
+                str(figure['attack-range']) + "\n"
             # edit the formatting once figure data is finalised
 
         return response
 
     return "ERROR FIGURES"
-#########################################
+#?#######################################
 # Function end                          #
-#########################################
+#?#######################################
 
 
-#########################################
+#!#######################################
 # Function to handle message responses  #
-#########################################
+#!#######################################
 def handle_response(client_socket):
     while True:
         if (not messageQueue.empty()):
@@ -132,13 +137,13 @@ def handle_response(client_socket):
             print("Response => " + response)
             client_socket.send(bytes(response, 'utf-8'))
             print("Reponse sent!")
-#########################################
+#?#######################################
 # Function end                          #
-#########################################
+#?#######################################
 
 
 # Server configuration
-HOST = '0.0.0.0'  # localhost
+HOST = '127.0.0.1'  # localhost
 PORT = 20111
 
 # Create a socket object
