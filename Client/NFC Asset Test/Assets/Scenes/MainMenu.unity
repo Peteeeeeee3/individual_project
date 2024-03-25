@@ -172,7 +172,7 @@ GameObject:
   - component: {fileID: 79701046}
   - component: {fileID: 79701045}
   m_Layer: 0
-  m_Name: Speed Text
+  m_Name: Attack RateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2325,7 +2325,7 @@ GameObject:
   - component: {fileID: 1200896944}
   - component: {fileID: 1200896943}
   m_Layer: 0
-  m_Name: Speed Text
+  m_Name: Damage Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4341,8 +4341,8 @@ RectTransform:
   m_Children:
   - {fileID: 138021795}
   - {fileID: 1483536313}
-  - {fileID: 1612760998}
   - {fileID: 470187413}
+  - {fileID: 1612760998}
   - {fileID: 946421266}
   - {fileID: 62320439}
   - {fileID: 1435716768}
@@ -4561,19 +4561,19 @@ MonoBehaviour:
   CharactersViewCanvas: {fileID: 139900416}
   ContentContainer: {fileID: 507476015}
   CVSVItemPrefab: {fileID: 7784909530575595797, guid: 9abbb22a6629955468b178428cc393cc, type: 3}
-  CharacterInfoArea: {fileID: 0}
-  CharacterNameText: {fileID: 0}
-  LevelText: {fileID: 0}
-  ExpSlider: {fileID: 0}
-  AvailableUpgradesText: {fileID: 0}
-  MoveSpeedText: {fileID: 0}
-  MoveSpeedUpgradeButton: {fileID: 0}
-  DamageText: {fileID: 0}
-  DamageUpgradeButton: {fileID: 0}
-  AttackRateText: {fileID: 0}
-  AttackRateUpgradeButton: {fileID: 0}
-  AttackRangeText: {fileID: 0}
-  AttackRangeUpgradeButton: {fileID: 0}
+  CharacterInfoArea: {fileID: 138021794}
+  CharacterNameText: {fileID: 1483536314}
+  LevelText: {fileID: 470187414}
+  ExpSlider: {fileID: 1612760999}
+  AvailableUpgradesText: {fileID: 946421267}
+  MoveSpeedText: {fileID: 1338788473}
+  MoveSpeedUpgradeButton: {fileID: 702764471}
+  DamageText: {fileID: 1200896943}
+  DamageUpgradeButton: {fileID: 1114668654}
+  AttackRateText: {fileID: 79701045}
+  AttackRateUpgradeButton: {fileID: 840278747}
+  AttackRangeText: {fileID: 2134453085}
+  AttackRangeUpgradeButton: {fileID: 2114295549}
 --- !u!4 &1917132321
 Transform:
   m_ObjectHideFlags: 0
@@ -4892,7 +4892,7 @@ GameObject:
   - component: {fileID: 2134453086}
   - component: {fileID: 2134453085}
   m_Layer: 0
-  m_Name: Speed Text
+  m_Name: Explosion Range Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

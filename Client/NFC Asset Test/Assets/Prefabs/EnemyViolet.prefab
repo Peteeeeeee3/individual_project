@@ -58,6 +58,7 @@ MonoBehaviour:
   attackFrequency: 3
   attackRange: 250
   bulletPrefab: {fileID: 5301013519591020559, guid: 1a078dd26718d8148887ef014081a889, type: 3}
+  expValue: 30
 --- !u!143 &5048415658265245791
 CharacterController:
   m_ObjectHideFlags: 0

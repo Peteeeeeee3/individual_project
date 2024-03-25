@@ -102,6 +102,55 @@ def get_all_figures(message):
 
 
 #!#######################################
+# Function to handle getting a figure   #
+#!#######################################
+def get_figure(message):
+    tempUserContainer = db.Users.find_one({"_id": bson.ObjectId(message[1])})
+    if not tempUserContainer == None:
+        user = dict(tempUserContainer)
+        for figure in user['figures']:
+            if str(figure['_id']) == message[2]:
+                return "FIGURE FOUND\n" +\
+                message[0] + "\n" +\
+                figure['_id'] + "\n" +\
+                figure['type'] + "\n" +\
+                str(figure['level']) + "\n" +\
+                str(figure['exp']) + "\n" +\
+                str(figure['move-speed']) + "\n" +\
+                str(figure['damage']) + "\n" +\
+                str(figure['attack-rate']) + "\n" +\
+                str(figure['attack-range']) + "\n"
+
+    return "FIGURE NOT FOUND"                
+#?#######################################
+# Function end                          #
+#?#######################################
+
+
+#!#######################################
+# Function to handle updating a figure  #
+#!#######################################
+def update_figure(message):
+    tempUserContainer = db.Users.find_one({"_id": bson.ObjectId(message[0])})
+    if not tempUserContainer == None:
+        user = dict(tempUserContainer)
+        for figure in user['figures']:
+            if figure['_id'] == message[1]:
+                figure['level'] = message[3]
+                figure['exp'] = message[4]
+                print(figure)
+
+        print(user['figures'])
+        db.User.update_one({"_id": message[0]}, {"$set": {"figures": user['figures']}})
+        return "FIGURE UPDATED"
+
+    return "FAILED TO UPDATE FIGURE"
+#?#######################################
+# Function end                          #
+#?#######################################
+
+
+#!#######################################
 # Function to handle message responses  #
 #!#######################################
 def handle_response(client_socket):
@@ -119,16 +168,24 @@ def handle_response(client_socket):
             print(firstLine)
 
             # handle command
-            if (firstLine[0] == "VALIDATE"):
+            if firstLine[0] == "VALIDATE":
                 print("validate")
-                if (firstLine[1] == "USER"):
+                if firstLine[1] == "USER":
                     print("user")
                     response = validate_user(messageLines[1:])
                     print("validated " + response)
-            elif (firstLine[0] == "GET"):
+
+            elif firstLine[0] == "GET":
                 print("get")
-                if ((firstLine[1] == "FIGURES")):
+                if firstLine[1] == "FIGURES":
                     response = get_all_figures(messageLines[1:])
+                elif firstLine[1] == "FIGURE":
+                    response = get_figure(messageLines[1:])
+            
+            elif firstLine[0] == "UPDATE":
+                print("update")
+                if firstLine[1] == "FIGURE":
+                    response = update_figure(messageLines[1:])
 
             if response == None:
                 continue    

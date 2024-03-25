@@ -53,13 +53,14 @@ public class PlayerController : MonoBehaviour
     //
 
     public float health { get; set; }
-    public Transform activePlayerModel { get; set; }
+    public Transform activePlayerModel { get; private set; }
     private PlayerType activePlayerType;
-    private string activePlayerID;
+    public string activePlayerID { get; private set; }
     private float attackTimer = 0;
     private Dictionary<PlayerType, float> timerResetDict;
     private bool isReady = false;
     private Transform radialAttack;
+    public int expCollected { get; private set; } = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -205,15 +206,12 @@ public class PlayerController : MonoBehaviour
     private void ReadMessanger()
     {
         // check for detection of a new figure, only numeric part of ID string is unique
-        if (!activePlayerID.Substring(16).Equals(NfcMessanger.ID.Substring(16)) &&
-            NfcMessanger.initialized)
+        if (!NfcMessanger.IsRead &&
+            NfcMessanger.Initialized)
         {
-            // TODO: validate ID -> break if invalid
-            //NfcMessanger.NfcHandler.ValidateFigure();
-
             // assign new player model based on 
             bool noError = true;
-            switch (NfcMessanger.playerType)
+            switch (NfcMessanger.Figure.type)
             {
                 case PlayerType.BLUE:
                     activePlayerModel = blueCube;
@@ -234,12 +232,14 @@ public class PlayerController : MonoBehaviour
             // update all active player information only if all data is valid for use
             if (noError)
             {
-                activePlayerID = NfcMessanger.ID;
-                activePlayerType = NfcMessanger.playerType;
+                activePlayerID = NfcMessanger.Figure.id;
+                activePlayerType = NfcMessanger.Figure.type;
                 isReady = true;
                 Time.timeScale = 1;
                 gameNotReadyPanel.GetComponent<RectTransform>().position = new Vector3(100000000, 100000000, 1);
             }
+
+            NfcMessanger.IsRead = true;
         }
     }
 
@@ -250,5 +250,14 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(float damage)
     {
         health -= damage;
+    }
+
+    /// <summary>
+    /// Adds experience points gained
+    /// </summary>
+    /// <param name="exp">experience points to gain</param>
+    public void GainExp(int exp)
+    {
+        expCollected += exp;
     }
 }

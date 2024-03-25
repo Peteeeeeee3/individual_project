@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -87,6 +88,22 @@ public static class Connection
                         MainMenu mainMenu = (MainMenu)monoBehaviour;
                         mainMenu.OnAllFiguresReceived(responseLines);
                     }
+                    // if figure is not found, then no need to handle as nothing should take place
+                    else if (responseLines[0].Equals("FIGURE FOUND"))
+                    {
+                        int dataOffset = 2;
+                        subscribers.TryGetValue(responseLines[1], out MonoBehaviour monoBehaviour);
+                        if (responseLines[1].Equals("NFCHANDLER"))
+                        {
+                            NFCHandler nfcHandler = (NFCHandler)monoBehaviour;
+                            nfcHandler.OnUpdateMessanger(responseLines, dataOffset);
+                        }
+                        else if (responseLines[1].Equals("LEVELMANAGER"))
+                        {
+                            LevelManager levelManager = (LevelManager)monoBehaviour;
+                            levelManager.OnCompleteLevel(responseLines, dataOffset);
+                        }    
+                    }
                 }
             }
         }
@@ -148,5 +165,14 @@ public static class Connection
     public static void Subscribe(string subscriberName, MonoBehaviour subscriber)
     {
         subscribers.Add(subscriberName, subscriber);
+    }
+
+    /// <summary>
+    /// Removes subscriber from list
+    /// </summary>
+    /// <param name="subscriberName">Name of subscriber to remove</param>
+    public static void Unsubscribe(string subscriberName)
+    {
+        subscribers.Remove(subscriberName);
     }
 }

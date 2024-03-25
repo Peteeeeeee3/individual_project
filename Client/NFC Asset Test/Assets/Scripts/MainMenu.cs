@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using TMPro;
+using UnityEditor.Profiling;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -202,12 +203,27 @@ public class MainMenu : MonoBehaviour
 
         // display figure state & info
         CharacterNameText.SetText(selectedFigure.name);
-        LevelText.SetText(selectedFigure.level.ToString());
-        ExpSlider.maxValue = Globals.levelExpRequirements[selectedFigure.level];
+        LevelText.SetText("Level: " + selectedFigure.level.ToString());
+        if (selectedFigure.level >= 20)
+        {
+            ExpSlider.maxValue = 0;
+        }
+        else
+        {
+            ExpSlider.maxValue = Globals.LEVEL_EXP_REQUIREMENTS[selectedFigure.level];
+        }
         ExpSlider.value = selectedFigure.exp;
         MoveSpeedText.SetText("Move Speed: " + selectedFigure.moveSpeed.ToString());
         DamageText.SetText("Attack Damage: " + selectedFigure.damage.ToString());
-        AttackRateText.SetText(selectedFigure.attackRate.ToString());
-        AttackRangeText.SetText(selectedFigure.attackRange.ToString());
+        AttackRateText.SetText("Attack Speed: " + selectedFigure.attackRate.ToString());
+        AttackRangeText.SetText("Explosion Size: " + selectedFigure.attackRange.ToString());
+    }
+
+    /// <summary>
+    /// Handles the destruction of this MonoBehaviour class
+    /// </summary>
+    private void OnDestroy()
+    {
+        Connection.Unsubscribe("MAINMENU");
     }
 }

@@ -5088,7 +5088,7 @@ MonoBehaviour:
   creamCube: {fileID: 1715536615}
   movementJoystick: {fileID: 974183820}
   attackJoystick: {fileID: 1352100087}
-  moveSpeed: 300
+  moveSpeed: 150
   NfcMessanger: {fileID: 1637926874}
   bulletPrefab: {fileID: 5301013519591020559, guid: a8966b70b1abc494abeaec9acdf90179, type: 3}
   blueAttackInterval: 0.7
@@ -16333,8 +16333,10 @@ MonoBehaviour:
   - {fileID: 734763006}
   - {fileID: 988212184}
   outline: {fileID: 2100000, guid: acd8f714506fd6540a36a074eb7f1491, type: 2}
-  highlightedEnemyCount: 25
+  highlightedEnemyCount: 0
   DebugText4: {fileID: 995369300}
+  exitPortalPrefab: {fileID: 3744133877081091469, guid: a2a060732547fe64581bb0cb3c2bdf1d, type: 3}
+  playerController: {fileID: 486942262}
 --- !u!1 &1455594082
 GameObject:
   m_ObjectHideFlags: 0

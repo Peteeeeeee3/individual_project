@@ -125,4 +125,12 @@ public class LoginScreen : MonoBehaviour
     {
 
     }
+
+    /// <summary>
+    /// Handles the destruction of this MonoBehaviour class
+    /// </summary>
+    private void OnDestroy()
+    {
+        Connection.Unsubscribe("LOGINSCREEN");
+    }
 }

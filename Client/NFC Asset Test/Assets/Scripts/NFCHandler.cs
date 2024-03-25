@@ -16,9 +16,12 @@ public class NFCHandler : MonoBehaviour
     [SerializeField]
     private NFCMessanger NfcMessanger;
 
+    private string ConnectionIdString = "NFCHANDLER";
+
     // Start is called before the first frame update
     void Start()
     {
+        Connection.Subscribe(ConnectionIdString, this);
         bool isNFCSupported = NFC.isSupported;
         NFCsupportedText.SetText(isNFCSupported.ToString());
         if (!isNFCSupported )
@@ -68,7 +71,7 @@ public class NFCHandler : MonoBehaviour
             }
             debugText3 = StringToASCII(debugText3);
             DebugText3.SetText(debugText3);
-            OnUpdateMessanger(debugText3);
+            OnRequestFigureData(debugText3);
         }
     }
 
@@ -96,23 +99,62 @@ public class NFCHandler : MonoBehaviour
         return string.Empty;
     }
 
-    private void OnUpdateMessanger(string id)
+    /// <summary>
+    /// Requests figure data from server#
+    /// Called when NFC scan is triggered
+    /// </summary>
+    /// <param name="id"></param>
+    private void OnRequestFigureData(string id)
     {
+        string message = "GET FIGURE\n" +
+            ConnectionIdString + "\n" +
+            Globals.ACTIVE_USER_ID + "\n" +
+            id;
 
-
-        NfcMessanger.ID = id;
-        //NfcMessanger.playerType = ;
-        //NfcMessanger.activePlayerModel = ;
-        if (!NfcMessanger.initialized) { NfcMessanger.initialized = true; }
+        Connection.QueueMessage(message);
     }
 
     /// <summary>
-    /// Validates the figure for use
+    /// Updates NFC messanger
     /// </summary>
-    /// <returns></returns>
-    public bool ValidateFigure()
+    public void OnUpdateMessanger(string[] data, int dataOffset)
     {
-        // TODO: validate figure with server/db
-        return false;
+        PlayerType type = PlayerType.ERROR;
+        if (data[dataOffset + 1].Equals("BLUE"))
+        {
+            type = PlayerType.BLUE;
+        }
+        else if (data[dataOffset + 1].Equals("GREY"))
+        {
+            type = PlayerType.GREY;
+        }
+        else if (data[dataOffset + 1].Equals("CREAM"))
+        {
+            type = PlayerType.CREAM;
+        }
+
+        Figure update = new Figure(
+            data[dataOffset],
+            type,
+            Int32.Parse(data[dataOffset + 2]),
+            Int32.Parse(data[dataOffset + 3]),
+            float.Parse(data[dataOffset + 4]),
+            float.Parse(data[dataOffset + 5]),
+            float.Parse(data[dataOffset + 6]),
+            float.Parse(data[dataOffset + 7]),
+            ""
+            );
+
+        NfcMessanger.Figure = update;
+        NfcMessanger.IsRead = false;
+        if (!NfcMessanger.Initialized) { NfcMessanger.Initialized = true; }
+    }
+
+    /// <summary>
+    /// Handles the destruction of this MonoBehaviour class
+    /// </summary>
+    private void OnDestroy()
+    {
+        Connection.Unsubscribe("NFCHANDLER");
     }
 }

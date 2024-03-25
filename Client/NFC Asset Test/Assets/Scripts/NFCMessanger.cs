@@ -2,15 +2,23 @@ using UnityEngine;
 
 public class NFCMessanger : MonoBehaviour 
 {
-    public PlayerType playerType { get; set; }
-    public string ID { get; set; }
+    public bool Initialized { get; set; }
+    public bool IsRead { get; set; } = false;
     public NFCHandler NfcHandler { get; set; }
-    public bool initialized { get; set; }
+    public Figure Figure { get; set; }
 
     private void Start()
     {
-        initialized = true; // CHANGE THIS TO FALSE WHEN NOT TESTING IN UNITY
-        ID = "------------------------------------------------";
-        playerType = PlayerType.GREY;
+        Initialized = true; // CHANGE THIS TO FALSE WHEN NOT TESTING IN UNITY
+        Figure = new Figure(
+            "Figure-Testing-Id",
+            PlayerType.CREAM,
+            1,
+            0,
+            150,
+            10,
+            0.7f,
+            1,
+            "GREY-Id");
     }
 }

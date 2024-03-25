@@ -33,6 +33,8 @@ public class Enemy : MonoBehaviour
     private float attackRange;
     [SerializeField]
     private GameObject bulletPrefab;
+    [SerializeField]
+    public int expValue;
 
     public LevelManager levelManager { get; set; }
     private float radialAttackImmunityTimer = 0;
@@ -71,6 +73,7 @@ public class Enemy : MonoBehaviour
 
         if (health <= 0)
         {
+            player.GetComponent<PlayerController>().GainExp(expValue);
             if (levelManager)
             {
                 levelManager.removeRequiredEnemy(this);
