@@ -141,7 +141,7 @@ def update_figure(message):
                 print(figure)
 
         print(user['figures'])
-        db.User.update_one({"_id": message[0]}, {"$set": {"figures": user['figures']}})
+        db.Users.update_one({"_id": bson.ObjectId(message[0])}, {"$set": {"figures": user['figures']}})
         return "FIGURE UPDATED"
 
     return "FAILED TO UPDATE FIGURE"
