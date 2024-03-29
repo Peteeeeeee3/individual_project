@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using TMPro;
-using UnityEditor.Profiling;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -50,11 +48,14 @@ public class MainMenu : MonoBehaviour
     private List<Figure> CVFigures = new List<Figure>();
     private List<string> FiguresInfo = new List<string>();
     private bool FigureInfoReady = false;
+    private int CurrentlyDisplayedFigureId = -1;
 
     // Start is called before the first frame update
     void Start()
     {
         Connection.Subscribe("MAINMENU", this);
+
+        CharacterInfoArea.SetActive(false);
     }
 
     // Update is called once per frame
@@ -62,7 +63,7 @@ public class MainMenu : MonoBehaviour
     {
         if (FigureInfoReady)
         {
-            DisplayFigureInfo();
+            SetupFiguresListItems();
             FigureInfoReady = false;
         }
     }
@@ -104,10 +105,20 @@ public class MainMenu : MonoBehaviour
     }
 
     /// <summary>
+    /// Handles character registeration screen
+    /// </summary>
+    public void OnRegisterFigureClicked()
+    {
+
+    }
+
+    /// <summary>
     /// Handles request on back button on Characters View Canvas
     /// </summary>
     public void OnCVCBackButtonClicked()
     {
+        CharacterInfoArea.SetActive(false);
+
         CharactersViewCanvas.alpha = 0;
         CharactersViewCanvas.interactable = false;
         CharactersViewCanvas.blocksRaycasts = false;
@@ -147,9 +158,9 @@ public class MainMenu : MonoBehaviour
     /// <summary>
     /// Displays figures in scroll view
     /// </summary>
-    private void DisplayFigureInfo()
+    private void SetupFiguresListItems()
     {
-        int numAttributes = 8; // number of attributes be figure
+        int numAttributes = 9; // number of attributes be figure
         int buttonId = 0;
         for (int i = 0; i < FiguresInfo.Count; i += numAttributes)
         {
@@ -173,14 +184,15 @@ public class MainMenu : MonoBehaviour
             }
 
             Int32.TryParse(FiguresInfo[i + 2], out int level);
-            Int32.TryParse(FiguresInfo[i + 3], out int exp);
-            float.TryParse(FiguresInfo[i + 4], out float moveSpeed);
-            float.TryParse(FiguresInfo[i + 5], out float damage);
-            float.TryParse(FiguresInfo[i + 6], out float attackRate);
-            float.TryParse(FiguresInfo[i + 7], out float attackRange);
+            Int32.TryParse(FiguresInfo[i + 3], out int availableUpgrades);
+            Int32.TryParse(FiguresInfo[i + 4], out int exp);
+            float.TryParse(FiguresInfo[i + 5], out float moveSpeed);
+            float.TryParse(FiguresInfo[i + 6], out float damage);
+            float.TryParse(FiguresInfo[i + 7], out float attackRate);
+            float.TryParse(FiguresInfo[i + 8], out float attackRange);
             string figureName = type.ToString() + "-" + id.Substring(15);
 
-            CVFigures.Add(new Figure(id, type, level, exp, moveSpeed, damage, attackRate, attackRange, figureName));
+            CVFigures.Add(new Figure(id, type, level, availableUpgrades, exp, moveSpeed, damage, attackRate, attackRange, figureName));
             var item = Instantiate(CVSVItemPrefab);
             item.GetComponentInChildren<TextMeshProUGUI>().text = figureName;
             int temp = buttonId; // needs to be here to avoid listener storing location of buttonId and using incorrect value
@@ -199,11 +211,13 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void OnValueChanged(int id)
     {
+        CharacterInfoArea.SetActive(true);
         Figure selectedFigure = CVFigures[id];
 
         // display figure state & info
         CharacterNameText.SetText(selectedFigure.name);
         LevelText.SetText("Level: " + selectedFigure.level.ToString());
+        AvailableUpgradesText.SetText("Available Upgrades: " + selectedFigure.availableUpgrades.ToString());
         if (selectedFigure.level >= 20)
         {
             ExpSlider.maxValue = 0;
@@ -217,6 +231,201 @@ public class MainMenu : MonoBehaviour
         DamageText.SetText("Attack Damage: " + selectedFigure.damage.ToString());
         AttackRateText.SetText("Attack Speed: " + selectedFigure.attackRate.ToString());
         AttackRangeText.SetText("Explosion Size: " + selectedFigure.attackRange.ToString());
+
+        // make buttons inactive if no further updating is possible
+        if (selectedFigure.availableUpgrades > 0)
+        {
+            MoveSpeedUpgradeButton.interactable = true;
+            DamageUpgradeButton.interactable = true;
+            AttackRateUpgradeButton.interactable = true;
+            AttackRangeUpgradeButton.interactable = true;
+
+            if (FindCurrentMoveSpeedUpgrade(selectedFigure) == Globals.MOVE_SPEED_UPGRADE_VALUES.Count - 1)
+            {
+                MoveSpeedUpgradeButton.interactable = false;
+            }
+
+            if (FindCurrentMoveSpeedUpgrade(selectedFigure) == Globals.DAMAGE_UPGRADE_VALUES.Count - 1)
+            {
+                DamageUpgradeButton.interactable = false;
+            }
+
+            if (FindCurrentMoveSpeedUpgrade(selectedFigure) == Globals.ATTACK_RATE_UPGRADE_VALUES.Count - 1)
+            {
+                AttackRateUpgradeButton.interactable = false;
+            }
+
+            if (FindCurrentMoveSpeedUpgrade(selectedFigure) == Globals.ATTACK_RANGE_UPGRADE_VALUES.Count - 1)
+            {
+                AttackRangeUpgradeButton.interactable = false;
+            }
+        }
+        else
+        {
+            MoveSpeedUpgradeButton.interactable = false;
+            DamageUpgradeButton.interactable = false;
+            AttackRateUpgradeButton.interactable = false;
+            AttackRangeUpgradeButton.interactable = false;
+        }
+
+        // store displayed figure's ID
+        CurrentlyDisplayedFigureId = id;
+    }
+
+    /// <summary>
+    /// Finds the index of the current move speed upgrade level
+    /// </summary>
+    /// <param name="figure">Figure to check upgrade level for</param>
+    /// <returns>Index of upgrade level</returns>
+    private int FindCurrentMoveSpeedUpgrade(Figure figure)
+    {
+        for (int i = 0; i < Globals.MOVE_SPEED_UPGRADE_VALUES.Count; i++)
+        {
+            if (figure.moveSpeed == Globals.MOVE_SPEED_UPGRADE_VALUES[i])
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// Finds the index of the current damage upgrade level
+    /// </summary>
+    /// <param name="figure">Figure to check upgrade level for</param>
+    /// <returns>Index of upgrade level</returns>
+    private int FindCurrentDamageUpgrade(Figure figure)
+    {
+        for (int i = 0; i < Globals.DAMAGE_UPGRADE_VALUES[figure.type].Count; i++)
+        {
+            if (figure.damage == Globals.DAMAGE_UPGRADE_VALUES[figure.type][i])
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// Finds the index of the current attack rate upgrade level
+    /// </summary>
+    /// <param name="figure">Figure to check upgrade level for</param>
+    /// <returns>Index of upgrade level</returns>
+    private int FindCurrentAttackRateUpgrade(Figure figure)
+    {
+        for (int i = 0; i < Globals.ATTACK_RATE_UPGRADE_VALUES.Count; i++)
+        {
+            if (figure.moveSpeed == Globals.ATTACK_RATE_UPGRADE_VALUES[i])
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// Finds the index of the current move speed upgrade level
+    /// </summary>
+    /// <param name="figure">Figure to check upgrade level for</param>
+    /// <returns>Index of upgrade level</returns>
+    private int FindCurrentAttackRangeUpgrade(Figure figure)
+    {
+        for (int i = 0; i < Globals.ATTACK_RANGE_UPGRADE_VALUES.Count; i++)
+        {
+            if (figure.moveSpeed == Globals.ATTACK_RANGE_UPGRADE_VALUES[i])
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// Updates figure's move speed stat
+    /// </summary>
+    public void UpdateMoveSpeed()
+    {
+        Figure figure = CVFigures[CurrentlyDisplayedFigureId];
+        int figureStatLevelId = FindCurrentMoveSpeedUpgrade(figure);
+        if (figureStatLevelId != -1)
+        {
+            figure.moveSpeed = Globals.MOVE_SPEED_UPGRADE_VALUES[figureStatLevelId + 1];
+
+            string message = "UPDATE STAT\n" +
+                Globals.ACTIVE_USER_ID + "\n" +
+                figure.id + "\n" +
+                "MOVE SPEED" + "\n" +
+                figure.moveSpeed;
+
+            Connection.QueueMessage(message);
+        }
+    }
+    
+    /// <summary>
+    /// Updates figure's damage stat
+    /// </summary>
+    public void UpdateDamage()
+    {
+        Figure figure = CVFigures[CurrentlyDisplayedFigureId];
+        int figureStatLevelId = FindCurrentDamageUpgrade(figure);
+        if (figureStatLevelId != -1)
+        {
+            figure.damage = Globals.DAMAGE_UPGRADE_VALUES[figure.type][figureStatLevelId + 1];
+
+            string message = "UPDATE STAT\n" +
+                Globals.ACTIVE_USER_ID + "\n" +
+                figure.id + "\n" +
+                "DAMAGE" + "\n" +
+                figure.damage;
+
+            Connection.QueueMessage(message);
+        }
+    }
+
+    /// <summary>
+    /// Updates figure's attack rate stat
+    /// </summary>
+    public void UpdateAttackRate()
+    {
+        Figure figure = CVFigures[CurrentlyDisplayedFigureId];
+        int figureStatLevelId = FindCurrentAttackRateUpgrade(figure);
+        if (figureStatLevelId != -1)
+        {
+            figure.attackRate = Globals.ATTACK_RATE_UPGRADE_VALUES[figureStatLevelId + 1];
+
+            string message = "UPDATE STAT\n" +
+                Globals.ACTIVE_USER_ID + "\n" +
+                figure.id + "\n" +
+                "ATTACK RATE" + "\n" +
+                figure.attackRate;
+
+            Connection.QueueMessage(message);
+        }
+    }
+
+    /// <summary>
+    /// Updates figure's attack range
+    /// </summary>
+    public void UpdateAttackRange()
+    {
+        Figure figure = CVFigures[CurrentlyDisplayedFigureId];
+        int figureStatLevelId = FindCurrentAttackRangeUpgrade(figure);
+        if (figureStatLevelId != -1)
+        {
+            figure.attackRange = Globals.ATTACK_RANGE_UPGRADE_VALUES[figureStatLevelId + 1];
+
+            string message = "UPDATE STAT\n" +
+                Globals.ACTIVE_USER_ID + "\n" +
+                figure.id + "\n" +
+                "ATTACK RANGE" + "\n" +
+                figure.attackRange;
+
+            Connection.QueueMessage(message);
+        }
     }
 
     /// <summary>

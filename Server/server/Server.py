@@ -23,7 +23,7 @@ messageQueue = queue.Queue()
 
 
 #!#######################################
-# Function to validate user             #
+#! Function to validate user            #
 #!#######################################
 def validate_user(message):
     tempUserContainer = db.Users.find_one({"username": message[0]})
@@ -35,12 +35,12 @@ def validate_user(message):
         
     return "INVALID USER"
 #?#######################################
-# Function end                          #
+#? Function end                         #
 #?#######################################
 
 
 #!#######################################
-# Function to handle incoming messages  #
+#! Function to handle incoming messages #
 #!#######################################
 def handle_client(client_socket, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
@@ -56,12 +56,12 @@ def handle_client(client_socket, addr):
 
         print(messageQueue)
 #?#######################################
-# Function end                          #
+#? Function end                         #
 #?#######################################
     
 
 #!#######################################
-# Function to remove 0 width blank space#
+#!Function to remove 0 width blank space#
 #!#######################################
 def remove_ZWBS(text_array):
     for i, text in enumerate(text_array):
@@ -69,12 +69,12 @@ def remove_ZWBS(text_array):
         string_decode = string_encode.decode()
         text_array[i] = string_decode
 #?#######################################
-# Function end                          #
+#? Function end                         #
 #?#######################################
 
 
 #!#######################################
-# Function to handle getting all figures#
+#!Function to handle getting all figures#
 #!#######################################
 def get_all_figures(message):
     tempUserContainer = db.Users.find_one({"_id": bson.ObjectId(message[0])})
@@ -86,6 +86,7 @@ def get_all_figures(message):
                 figure['_id'] + "\n" +\
                 figure['type'] + "\n" +\
                 str(figure['level']) + "\n" +\
+                str(figure['available-upgrades']) + "\n" +\
                 str(figure['exp']) + "\n" +\
                 str(figure['move-speed']) + "\n" +\
                 str(figure['damage']) + "\n" +\
@@ -97,12 +98,12 @@ def get_all_figures(message):
 
     return "ERROR FIGURES"
 #?#######################################
-# Function end                          #
+#? Function end                         #
 #?#######################################
 
 
 #!#######################################
-# Function to handle getting a figure   #
+#! Function to handle getting a figure  #
 #!#######################################
 def get_figure(message):
     tempUserContainer = db.Users.find_one({"_id": bson.ObjectId(message[1])})
@@ -115,6 +116,7 @@ def get_figure(message):
                 figure['_id'] + "\n" +\
                 figure['type'] + "\n" +\
                 str(figure['level']) + "\n" +\
+                str(figure['available-upgrades']) + "\n" +\
                 str(figure['exp']) + "\n" +\
                 str(figure['move-speed']) + "\n" +\
                 str(figure['damage']) + "\n" +\
@@ -123,12 +125,12 @@ def get_figure(message):
 
     return "FIGURE NOT FOUND"                
 #?#######################################
-# Function end                          #
+#? Function end                         #
 #?#######################################
 
 
 #!#######################################
-# Function to handle updating a figure  #
+#! Function to handle updating a figure #
 #!#######################################
 def update_figure(message):
     tempUserContainer = db.Users.find_one({"_id": bson.ObjectId(message[0])})
@@ -146,12 +148,43 @@ def update_figure(message):
 
     return "FAILED TO UPDATE FIGURE"
 #?#######################################
-# Function end                          #
+#? Function end                         #
 #?#######################################
 
 
 #!#######################################
-# Function to handle message responses  #
+#! Function to handle updating a stat   #
+#!#######################################
+def upgrade_stat(message):
+    tempUserContainer = db.Users.find_one({"_id": bson.ObjectId(message[0])})
+    if not tempUserContainer == None:
+        user = dict(tempUserContainer)
+        for figure in user['figures']:
+            if figure['_id'] == message[1]:
+                if message[2] == "MOVE SPEED":
+                    figure['move-speed'] = int(message[3])
+                
+                elif message[2] == "DAMAGE":
+                    figure['damage'] = int(message[3])
+                
+                elif message[2] == "ATTACK RATE":
+                    figure['attack-rate'] = float(message[3])
+                
+                elif message[2] == "ATTACK RANGE":
+                    figure['attack-range'] = float(message[3])
+                    
+                figure['available-upgrades'] -= 1
+                db.Users.update_one({"_id": bson.ObjectId(message[0])}, {"$set": {"figures": user['figures']}})
+                return "SUCCESSFULLY UPDATED ATTACK RANGE STAT"
+                
+    return "FAILED TO UPDATE STAT"
+#?#######################################
+#? Function end                         #
+#?#######################################
+
+
+#!#######################################
+#! Function to handle message responses #
 #!#######################################
 def handle_response(client_socket):
     while True:
@@ -186,6 +219,8 @@ def handle_response(client_socket):
                 print("update")
                 if firstLine[1] == "FIGURE":
                     response = update_figure(messageLines[1:])
+                elif firstLine[1] == "STAT":
+                    response = upgrade_stat(messageLines[1:])
 
             if response == None:
                 continue    
@@ -195,7 +230,7 @@ def handle_response(client_socket):
             client_socket.send(bytes(response, 'utf-8'))
             print("Reponse sent!")
 #?#######################################
-# Function end                          #
+#? Function end                         #
 #?#######################################
 
 

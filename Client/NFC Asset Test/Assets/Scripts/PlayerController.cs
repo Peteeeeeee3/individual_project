@@ -49,13 +49,16 @@ public class PlayerController : MonoBehaviour
 
     // DEBUG
     [SerializeField]
+    private TextMeshProUGUI DebugText2;
+    [SerializeField]
+    private TextMeshProUGUI DebugText3;
+    [SerializeField]
     private TextMeshProUGUI DebugText5;
     //
 
     public float health { get; set; }
     public Transform activePlayerModel { get; private set; }
-    private PlayerType activePlayerType;
-    public string activePlayerID { get; private set; }
+    public Figure activePlayer { get; private set; }
     private float attackTimer = 0;
     private Dictionary<PlayerType, float> timerResetDict;
     private bool isReady = false;
@@ -66,10 +69,10 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         // REMOVE THIS - START
-        activePlayerModel = greyCube; // temp for testing only
+        /*activePlayerModel = greyCube; // temp for testing only
         activePlayerID = "NFC-GAME-FIGURE-1708202131970";
         activePlayerType = PlayerType.GREY;
-        health = 200;
+        health = 200;*/
         // REMOVE THIS - END
         timerResetDict = new Dictionary<PlayerType, float>
         {
@@ -125,10 +128,10 @@ public class PlayerController : MonoBehaviour
 
             // attack only if time interval has passed
             float timerResetValue;
-            timerResetDict.TryGetValue(activePlayerType, out timerResetValue);
+            timerResetDict.TryGetValue(activePlayer.type, out timerResetValue);
             if (attackTimer > timerResetValue)
             {
-                switch (activePlayerType)
+                switch (activePlayer.type)
                 {
                     case PlayerType.BLUE:
                         // find a vector normal to attack vector, use y-axis as attack vector is always parallel to x & z-axis
@@ -232,14 +235,14 @@ public class PlayerController : MonoBehaviour
             // update all active player information only if all data is valid for use
             if (noError)
             {
-                activePlayerID = NfcMessanger.Figure.id;
-                activePlayerType = NfcMessanger.Figure.type;
+                activePlayer = NfcMessanger.Figure;
                 isReady = true;
                 Time.timeScale = 1;
                 gameNotReadyPanel.GetComponent<RectTransform>().position = new Vector3(100000000, 100000000, 1);
             }
 
             NfcMessanger.IsRead = true;
+            DebugText2.SetText("ReadMessanger: noError == " + noError + " / isReady == " + isReady + " / IsRead == " + NfcMessanger.IsRead);
         }
     }
 

@@ -74,7 +74,7 @@ public class LevelManager : MonoBehaviour
             string message = "GET FIGURE\n" +
                 ConnectionIdString + "\n" +
                 Globals.ACTIVE_USER_ID + "\n" +
-                playerController.GetComponent<PlayerController>().activePlayerID;
+                playerController.GetComponent<PlayerController>().activePlayer.id;
 
             Connection.QueueMessage(message);
 

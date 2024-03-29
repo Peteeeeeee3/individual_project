@@ -3,16 +3,12 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class NFCHandler : MonoBehaviour
+public class GameNFCHandler : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI NFCsupportedText;
     [SerializeField]
     private TextMeshProUGUI DebugText1;
-    [SerializeField]
-    private TextMeshProUGUI DebugText2;
-    [SerializeField]
-    private TextMeshProUGUI DebugText3;
     [SerializeField]
     private NFCMessanger NfcMessanger;
 
@@ -27,7 +23,6 @@ public class NFCHandler : MonoBehaviour
         if (!isNFCSupported )
         {
             // Have this prompt message that device does not support NFC and then exit game upon OK button
-            DebugText1.SetText("NFC not supported");
             return;
         }
 
@@ -38,7 +33,6 @@ public class NFCHandler : MonoBehaviour
 
         // register application for NFC scanning when running in foreground
         NFC.Instance.RegisterForegroundDispatch(scanOptions);
-        DebugText1.SetText("Foreground NFC scanning activated");
 
         // register Instance_OnNDEFDiscovered() to be registered to be called when NFC tag with NDEF format is detected
         NFC.Instance.OnNdefDiscovered += Instance_OnNDEFDiscovered;
@@ -59,19 +53,17 @@ public class NFCHandler : MonoBehaviour
     /// <param name="e">NFC Event</param>
     void Instance_OnNDEFDiscovered(NFCEvent e)
     {
-        DebugText2.SetText("Instance_OnNDEFDiscovered called");
         // traverse all messages
         foreach (NdefMessage message in e.tag.messages)
         {
-            string debugText3 = "";
+            string tempText = "";
             // traverse records in message
             foreach (NdefRecord record in message.records) 
             {
-                debugText3 += record.payload;
+                tempText += record.payload;
             }
-            debugText3 = StringToASCII(debugText3);
-            DebugText3.SetText(debugText3);
-            OnRequestFigureData(debugText3);
+            tempText = StringToASCII(tempText);
+            OnRequestFigureData(tempText);
         }
     }
 
@@ -138,16 +130,18 @@ public class NFCHandler : MonoBehaviour
             type,
             Int32.Parse(data[dataOffset + 2]),
             Int32.Parse(data[dataOffset + 3]),
-            float.Parse(data[dataOffset + 4]),
+            Int32.Parse(data[dataOffset + 4]),
             float.Parse(data[dataOffset + 5]),
             float.Parse(data[dataOffset + 6]),
             float.Parse(data[dataOffset + 7]),
+            float.Parse(data[dataOffset + 8]),
             ""
             );
 
         NfcMessanger.Figure = update;
         NfcMessanger.IsRead = false;
         if (!NfcMessanger.Initialized) { NfcMessanger.Initialized = true; }
+        DebugText1.SetText("Figure set / IsRead == " + NfcMessanger.IsRead + " / Initialized == " + NfcMessanger.Initialized);
     }
 
     /// <summary>

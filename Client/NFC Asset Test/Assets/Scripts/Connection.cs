@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -9,6 +8,7 @@ using UnityEngine;
 
 public static class Connection
 {
+    //private static string serverAddress = "104.155.60.67";
     private static string serverAddress = "127.0.0.1";
     private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;
@@ -44,6 +44,8 @@ public static class Connection
             Debug.Log($"An error occurred: {ex.Message}");
             success = false;
         }
+
+        Application.wantsToQuit += CloseConnection;
     }
 
     /// <summary>
@@ -52,11 +54,11 @@ public static class Connection
     /// <param name="client">TCP client used for connection</param>
     static void ReceiveMessages(TcpClient client)
     {
-        try
+        // Receive data from the server
+        byte[] buffer = new byte[1024];
+        while (true)
         {
-            // Receive data from the server
-            byte[] buffer = new byte[1024];
-            while (true)
+            try
             {
                 NetworkStream stream = client.GetStream();
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
@@ -95,28 +97,28 @@ public static class Connection
                         subscribers.TryGetValue(responseLines[1], out MonoBehaviour monoBehaviour);
                         if (responseLines[1].Equals("NFCHANDLER"))
                         {
-                            NFCHandler nfcHandler = (NFCHandler)monoBehaviour;
+                            GameNFCHandler nfcHandler = (GameNFCHandler)monoBehaviour;
                             nfcHandler.OnUpdateMessanger(responseLines, dataOffset);
                         }
                         else if (responseLines[1].Equals("LEVELMANAGER"))
                         {
                             LevelManager levelManager = (LevelManager)monoBehaviour;
                             levelManager.OnCompleteLevel(responseLines, dataOffset);
-                        }    
+                        }
                     }
                 }
             }
-        }
-        catch (Exception ex)
-        {
-            Debug.Log($"Error in receiving message: {ex.Message}");
+            catch (Exception ex)
+            {
+                Debug.Log($"Error in receiving message: {ex.Message}");
+            }
         }
     }
 
     /// <summary>
     /// Called to close TCP connection
     /// </summary>
-    public static void CloseConnection()
+    public static bool CloseConnection()
     {
         try
         {
@@ -129,6 +131,8 @@ public static class Connection
         {
             Debug.Log($"Error in closing connection: {ex.Message}");
         }
+
+        return true;
     }
 
     /// <summary>

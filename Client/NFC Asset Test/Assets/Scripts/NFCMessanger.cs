@@ -4,13 +4,13 @@ public class NFCMessanger : MonoBehaviour
 {
     public bool Initialized { get; set; }
     public bool IsRead { get; set; } = false;
-    public NFCHandler NfcHandler { get; set; }
+    public GameNFCHandler NfcHandler { get; set; }
     public Figure Figure { get; set; }
 
     private void Start()
     {
-        Initialized = true; // CHANGE THIS TO FALSE WHEN NOT TESTING IN UNITY
-        Figure = new Figure(
+        Initialized = false; // CHANGE THIS TO FALSE WHEN NOT TESTING IN UNITY
+        /*Figure = new Figure(
             "Figure-Testing-Id",
             PlayerType.CREAM,
             1,
@@ -19,6 +19,6 @@ public class NFCMessanger : MonoBehaviour
             10,
             0.7f,
             1,
-            "GREY-Id");
+            "GREY-Id");*/
     }
 }
