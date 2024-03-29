@@ -37,17 +37,20 @@ public static class Globals
     };
     public static Dictionary<PlayerType, List<float>> DAMAGE_UPGRADE_VALUES = new Dictionary<PlayerType, List<float>>()
     {
-        { PlayerType.BLUE, new List<float>()
+        { 
+            PlayerType.BLUE, new List<float>()
             {
                 10, 13, 16, 19, 21, 24
             }
         },
-        { PlayerType.GREY, new List<float>()
+        { 
+            PlayerType.GREY, new List<float>()
             {
                 30, 32, 34, 36, 38, 40
             }
         },
-        { PlayerType.CREAM, new List<float>()
+        { 
+            PlayerType.CREAM, new List<float>()
             {
                 8, 12, 16, 20, 24, 28
             }

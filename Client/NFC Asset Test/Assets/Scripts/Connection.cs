@@ -8,8 +8,8 @@ using UnityEngine;
 
 public static class Connection
 {
-    //private static string serverAddress = "104.155.60.67";
-    private static string serverAddress = "127.0.0.1";
+    private static string serverAddress = "34.76.173.143";
+    //private static string serverAddress = "127.0.0.1";
     private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;
 
@@ -95,7 +95,7 @@ public static class Connection
                     {
                         int dataOffset = 2;
                         subscribers.TryGetValue(responseLines[1], out MonoBehaviour monoBehaviour);
-                        if (responseLines[1].Equals("NFCHANDLER"))
+                        if (responseLines[1].Equals("G_NFCHANDLER"))
                         {
                             GameNFCHandler nfcHandler = (GameNFCHandler)monoBehaviour;
                             nfcHandler.OnUpdateMessanger(responseLines, dataOffset);
@@ -105,6 +105,12 @@ public static class Connection
                             LevelManager levelManager = (LevelManager)monoBehaviour;
                             levelManager.OnCompleteLevel(responseLines, dataOffset);
                         }
+                    }
+                    else if (responseLines[0].Equals("FIGURE REGISTERED"))
+                    {
+                        subscribers.TryGetValue("MAINMENU", out MonoBehaviour monoBehaviour);
+                        MainMenu mainMenu = (MainMenu)monoBehaviour;
+                        mainMenu.OnFigureRegistered();
                     }
                 }
             }

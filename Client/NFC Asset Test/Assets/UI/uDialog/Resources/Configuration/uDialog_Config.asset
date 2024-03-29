@@ -1,0 +1,743 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cedb88ec90915d44fa9c39f444a414bf, type: 3}
+  m_Name: uDialog_Config
+  m_EditorClassIdentifier: 
+  ColorSchemes:
+  - Name: Light
+    TitleBackground:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+    TitleText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    TitleTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ViewportBackground:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ViewportText:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ViewportTextEffect:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+    ButtonBackground:
+      r: 0.9
+      g: 0.9
+      b: 0.9
+      a: 1
+    ButtonHighlight:
+      r: 0.603
+      g: 0.603
+      b: 0.603
+      a: 1
+    ButtonText:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Glow:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    Icon_Question:
+      r: 1
+      g: 0.75
+      b: 0.75
+      a: 1
+    Icon_Warning:
+      r: 0.9
+      g: 0.75
+      b: 0.5
+      a: 1
+  - Name: Dark
+    TitleBackground:
+      r: 0.125
+      g: 0.125
+      b: 0.125
+      a: 1
+    TitleText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    TitleTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ViewportBackground:
+      r: 0.25
+      g: 0.25
+      b: 0.25
+      a: 1
+    ViewportText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ViewportTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ButtonBackground:
+      r: 0.1
+      g: 0.1
+      b: 0.1
+      a: 1
+    ButtonHighlight:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ButtonText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Glow:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    Icon_Question:
+      r: 1
+      g: 0.75
+      b: 0.75
+      a: 1
+    Icon_Warning:
+      r: 0.9
+      g: 0.75
+      b: 0.5
+      a: 1
+  - Name: Plain
+    TitleBackground:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    TitleText:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    TitleTextEffect:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+    ViewportBackground:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ViewportText:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ViewportTextEffect:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+    ButtonBackground:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ButtonHighlight:
+      r: 0.709
+      g: 0.709
+      b: 0.709
+      a: 1
+    ButtonText:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Glow:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    Icon_Question:
+      r: 1
+      g: 0.75
+      b: 0.75
+      a: 1
+    Icon_Warning:
+      r: 0.9
+      g: 0.75
+      b: 0.5
+      a: 1
+  - Name: Green Highlight
+    TitleBackground:
+      r: 0.17463237
+      g: 0.625
+      b: 0
+      a: 1
+    TitleText:
+      r: 0
+      g: 0.8602941
+      b: 0.2530277
+      a: 1
+    TitleTextEffect:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+    ViewportBackground:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ViewportText:
+      r: 0
+      g: 0.8602941
+      b: 0.2530277
+      a: 1
+    ViewportTextEffect:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+    ButtonBackground:
+      r: 0.17463237
+      g: 0.625
+      b: 0
+      a: 1
+    ButtonHighlight:
+      r: 0
+      g: 0.8602941
+      b: 0.2530277
+      a: 1
+    ButtonText:
+      r: 0
+      g: 0.8602941
+      b: 0.2530277
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Glow:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 0.17463237
+      g: 0.625
+      b: 0
+      a: 1
+    Icon_Question:
+      r: 0.17463237
+      g: 0.625
+      b: 0
+      a: 1
+    Icon_Warning:
+      r: 0.17463237
+      g: 0.625
+      b: 0
+      a: 1
+  - Name: Orange Red
+    TitleBackground:
+      r: 1
+      g: 0
+      b: 0
+      a: 1
+    TitleText:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    TitleTextEffect:
+      r: 0.2205882
+      g: 0.2205882
+      b: 0.2205882
+      a: 1
+    ViewportBackground:
+      r: 0.647
+      g: 0.647
+      b: 0.647
+      a: 1
+    ViewportText:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    ViewportTextEffect:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+    ButtonBackground:
+      r: 1
+      g: 0
+      b: 0
+      a: 1
+    ButtonHighlight:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    ButtonText:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Glow:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    Icon_Question:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    Icon_Warning:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+  - Name: Blue Highlight
+    TitleBackground:
+      r: 0
+      g: 0.7655708
+      b: 0.88235295
+      a: 1
+    TitleText:
+      r: 0
+      g: 0.8602941
+      b: 0.7777059
+      a: 1
+    TitleTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ViewportBackground:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ViewportText:
+      r: 0
+      g: 0.8602941
+      b: 0.7777059
+      a: 1
+    ViewportTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ButtonBackground:
+      r: 0
+      g: 0.7655708
+      b: 0.88235295
+      a: 1
+    ButtonHighlight:
+      r: 0
+      g: 0.91724133
+      b: 1
+      a: 1
+    ButtonText:
+      r: 0.26588237
+      g: 0.8862745
+      b: 0.8527734
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Glow:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 0
+      g: 0.7655708
+      b: 0.88235295
+      a: 1
+    Icon_Question:
+      r: 0
+      g: 0.7655708
+      b: 0.88235295
+      a: 1
+    Icon_Warning:
+      r: 0
+      g: 0.7655708
+      b: 0.88235295
+      a: 1
+  - Name: Fantasy
+    TitleBackground:
+      r: 1
+      g: 0
+      b: 0
+      a: 1
+    TitleText:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    TitleTextEffect:
+      r: 0.2205882
+      g: 0.2205882
+      b: 0.2205882
+      a: 1
+    ViewportBackground:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ViewportText:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ViewportTextEffect:
+      r: 0.5
+      g: 0.5
+      b: 0.5
+      a: 1
+    ButtonBackground:
+      r: 1
+      g: 0
+      b: 0
+      a: 1
+    ButtonHighlight:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    ButtonText:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Glow:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    Icon_Question:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+    Icon_Warning:
+      r: 1
+      g: 0.68275857
+      b: 0
+      a: 1
+  - Name: Blue Glow
+    TitleBackground:
+      r: 0
+      g: 0.7655708
+      b: 0.88235295
+      a: 0.78431374
+    TitleText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    TitleTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ViewportBackground:
+      r: 0
+      g: 0.91724133
+      b: 1
+      a: 0.39215687
+    ViewportText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ViewportTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ButtonBackground:
+      r: 0
+      g: 0.7655708
+      b: 0.88235295
+      a: 0.78431374
+    ButtonHighlight:
+      r: 0
+      g: 0.91724133
+      b: 1
+      a: 1
+    ButtonText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.39215687
+    Glow:
+      r: 0
+      g: 0.8602941
+      b: 0.7777059
+      a: 0.39215687
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    Icon_Question:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    Icon_Warning:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+  - Name: Green Glow
+    TitleBackground:
+      r: 0.17463237
+      g: 0.625
+      b: 0
+      a: 0.6862745
+    TitleText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    TitleTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ViewportBackground:
+      r: 0.3510809
+      g: 0.97794116
+      b: 0.3949611
+      a: 0.39215687
+    ViewportText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ViewportTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    ButtonBackground:
+      r: 0.08855967
+      g: 0.8602941
+      b: 0
+      a: 0.78431374
+    ButtonHighlight:
+      r: 0.009691185
+      g: 0.659
+      b: 0
+      a: 1
+    ButtonText:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    ButtonTextEffect:
+      r: 0
+      g: 0
+      b: 0
+      a: 1
+    Shadow:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.39215687
+    Glow:
+      r: 0.050172955
+      g: 0.85294116
+      b: 0
+      a: 0.39215687
+    ScreenOverlay:
+      r: 0
+      g: 0
+      b: 0
+      a: 0.25
+    Icon_Information:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    Icon_Question:
+      r: 1
+      g: 1
+      b: 1
+      a: 1
+    Icon_Warning:
+      r: 1
+      g: 1
+      b: 1
+      a: 1

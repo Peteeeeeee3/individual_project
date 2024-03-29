@@ -184,6 +184,46 @@ def upgrade_stat(message):
 
 
 #!#######################################
+#! Function to register a figure        #
+#!#######################################
+def register_figure(message):
+    tempUserContainer = db.Users.find_one({"_id": bson.ObjectId(message[0])})
+    if not tempUserContainer == None:
+        user = dict(tempUserContainer)
+        # check first if user already has this figure
+        for figure in user['figures']:
+            if figure['_id'] == message[1]:
+                return "FIGURE ALREADY OWNED"
+            
+        # check whether figure exists in available db
+        tempFigureContainer = db.UnassignedFigures.find_one({"ID": message[1]})
+        if not tempFigureContainer == None:
+            figure = dict(tempFigureContainer)
+            numFigures = len(user['figures'])
+            convertedFigure = {
+                "_id": figure['_id'],
+                "type": figure['type'],
+                "attack-range": figure['attack-range'],
+                "attack-rate": figure['attack-rate'],
+                "damage": figure['damage'],
+                "exp": figure['exp'],
+                "level": figure['level'],
+                "move-speed": figure['move-speed'],
+                "available-upgrades": figure['available-upgrades']
+            }
+            user['figures'].insert(numFigures, convertedFigure)
+
+            db.Users.update_one({"_id": bson.ObjectId(message[0])}, {"$set": {"figures": user['figures']}})
+            db.UnassignedFigures.delete_one({"ID": message[1]})
+            return "FIGURE REGISTERED"
+
+    return "FIGURE NOT REGISTERED"
+#?#######################################
+#? Function end                         #
+#?#######################################
+
+
+#!#######################################
 #! Function to handle message responses #
 #!#######################################
 def handle_response(client_socket):
@@ -222,6 +262,10 @@ def handle_response(client_socket):
                 elif firstLine[1] == "STAT":
                     response = upgrade_stat(messageLines[1:])
 
+            elif firstLine[0] == "REGISTER":
+                if firstLine[1] == "FIGURE":
+                    response = register_figure(messageLines[1:])
+
             if response == None:
                 continue    
 
@@ -235,7 +279,7 @@ def handle_response(client_socket):
 
 
 # Server configuration
-HOST = '127.0.0.1'  # localhost
+HOST = '0.0.0.0'  # localhost
 PORT = 20111
 
 # Create a socket object

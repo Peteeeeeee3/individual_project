@@ -1,0 +1,84 @@
+[{
+  "_id": {
+    "$oid": "65d7940ab958e9cd65ac5f5e"
+  },
+  "ID": "NFC-GAME-FIGURE-1708202126964",
+  "type": "CREAM",
+  "attack-range": 0,
+  "attack-rate": 0.7,
+  "damage": 8,
+  "exp": 0,
+  "level": 0,
+  "move-speed": 150,
+  "available-upgrades": 0
+},
+{
+  "_id": {
+    "$oid": "65d79438b958e9cd65ac5f60"
+  },
+  "ID": "NFC-GAME-FIGURE-1708202127965",
+  "type": "BLUE",
+  "attack-range": 0,
+  "attack-rate": 0.7,
+  "damage": 10,
+  "exp": 0,
+  "level": 0,
+  "move-speed": 150,
+  "available-upgrades": 0
+},
+{
+  "_id": {
+    "$oid": "65d79470b958e9cd65ac5f61"
+  },
+  "ID": "NFC-GAME-FIGURE-1708202128966",
+  "type": "GREY",
+  "attack-range": 1,
+  "attack-rate": 0.7,
+  "damage": 30,
+  "exp": 0,
+  "level": 0,
+  "move-speed": 150,
+  "available-upgrades": 0
+},
+{
+  "_id": {
+    "$oid": "65d7948bb958e9cd65ac5f62"
+  },
+  "ID": "NFC-GAME-FIGURE-1708202129967",
+  "type": "BLUE",
+  "attack-range": 0,
+  "attack-rate": 0.7,
+  "damage": 10,
+  "exp": 0,
+  "level": 0,
+  "move-speed": 150,
+  "available-upgrades": 0
+},
+{
+  "_id": {
+    "$oid": "65d794a0b958e9cd65ac5f63"
+  },
+  "ID": "NFC-GAME-FIGURE-1708202130968",
+  "type": "CREAM",
+  "attack-range": 0,
+  "attack-rate": 0.7,
+  "damage": 8,
+  "exp": 0,
+  "level": 0,
+  "move-speed": 150,
+  "available-upgrades": 0
+},
+{
+  "_id": {
+    "$oid": "65d794b5b958e9cd65ac5f64"
+  },
+  "ID": "NFC-GAME-FIGURE-1708202131970",
+  "type": "GREY",
+  "attack-range": 1,
+  "attack-rate": 0.7,
+  "damage": 30,
+  "exp": 0,
+  "level": 0,
+  "move-speed": 150,
+  "available-upgrades": 0
+}]

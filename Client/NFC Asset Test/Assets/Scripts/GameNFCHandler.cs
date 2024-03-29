@@ -12,7 +12,7 @@ public class GameNFCHandler : MonoBehaviour
     [SerializeField]
     private NFCMessanger NfcMessanger;
 
-    private string ConnectionIdString = "NFCHANDLER";
+    private string ConnectionIdString = "G_NFCHANDLER";
 
     // Start is called before the first frame update
     void Start()
@@ -81,8 +81,8 @@ public class GameNFCHandler : MonoBehaviour
             string ascii = string.Empty;
             for (int i = 0; i < hexString.Length; i += 2)
             {
-                byte val = System.Convert.ToByte(hexString.Substring(i, 2), 16);
-                char character = System.Convert.ToChar(val);
+                byte val = Convert.ToByte(hexString.Substring(i, 2), 16);
+                char character = Convert.ToChar(val);
                 ascii += character;
             }
             return ascii;

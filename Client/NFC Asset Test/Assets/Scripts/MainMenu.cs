@@ -1,6 +1,8 @@
+using distriqt.plugins.nfc;
 using System;
 using System.Collections.Generic;
 using TMPro;
+using UI.Dialogs;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,6 +13,8 @@ public class MainMenu : MonoBehaviour
     private CanvasGroup MainCanvas;
     [SerializeField]
     private CanvasGroup CharactersViewCanvas;
+    [SerializeField]
+    private CanvasGroup RegisterFigureCanvas;
     [SerializeField]
     private UnityEngine.UIElements.ScrollView FiguresScrollView;
     [SerializeField]
@@ -49,6 +53,7 @@ public class MainMenu : MonoBehaviour
     private List<string> FiguresInfo = new List<string>();
     private bool FigureInfoReady = false;
     private int CurrentlyDisplayedFigureId = -1;
+    private RegisterFigureNFCHandler RegisterFigureNFCHandler;
 
     // Start is called before the first frame update
     void Start()
@@ -109,7 +114,15 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void OnRegisterFigureClicked()
     {
+        MainCanvas.alpha = 0;
+        MainCanvas.interactable = false;
+        MainCanvas.blocksRaycasts = false;
 
+        RegisterFigureCanvas.alpha = 1;
+        RegisterFigureCanvas.interactable = true;
+        RegisterFigureCanvas.blocksRaycasts = true;
+
+        RegisterFigureNFCHandler = new RegisterFigureNFCHandler();
     }
 
     /// <summary>
@@ -135,6 +148,22 @@ public class MainMenu : MonoBehaviour
     }
 
     /// <summary>
+    /// Handles request on back button on Register Figure Canvas
+    /// </summary>
+    public void OnRFBackButtonClicked()
+    {
+        RegisterFigureCanvas.alpha = 0;
+        RegisterFigureCanvas.interactable = false;
+        RegisterFigureCanvas.blocksRaycasts = false;
+
+        MainCanvas.alpha = 1;
+        MainCanvas.interactable = true;
+        MainCanvas.blocksRaycasts = true;
+
+        RegisterFigureNFCHandler = null;
+    }
+
+    /// <summary>
     /// Handles server response to info of all figures
     /// </summary>
     /// <param name="figuresInfo">Info about all of the account's figures</param>
@@ -153,6 +182,19 @@ public class MainMenu : MonoBehaviour
             }
             FigureInfoReady = true;
         }
+    }
+
+    /// <summary>
+    /// Handles successful registration of a figure
+    /// </summary>
+    public void OnFigureRegistered()
+    {
+        // do everyhing the backbutton does
+        OnRFBackButtonClicked();
+
+        uDialog.NewDialog().
+            SetContentText("The figure has successfully been added to your account!").
+            AddButton("Close", (dialog) => dialog.Close());
     }
 
     /// <summary>
@@ -192,7 +234,7 @@ public class MainMenu : MonoBehaviour
             float.TryParse(FiguresInfo[i + 8], out float attackRange);
             string figureName = type.ToString() + "-" + id.Substring(15);
 
-            CVFigures.Add(new Figure(id, type, level, availableUpgrades, exp, moveSpeed, damage, attackRate, attackRange, figureName));
+            CVFigures.Add(new Figure(id, type, level + 1, availableUpgrades, exp, moveSpeed, damage, attackRate, attackRange, figureName));
             var item = Instantiate(CVSVItemPrefab);
             item.GetComponentInChildren<TextMeshProUGUI>().text = figureName;
             int temp = buttonId; // needs to be here to avoid listener storing location of buttonId and using incorrect value
