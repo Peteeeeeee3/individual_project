@@ -1,5 +1,6 @@
 ﻿using distriqt.plugins.nfc;
 using System;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 
@@ -64,6 +65,7 @@ public class GameNFCHandler : MonoBehaviour
             }
             tempText = StringToASCII(tempText);
             OnRequestFigureData(tempText);
+            DebugText1.SetText(tempText);
         }
     }
 
@@ -84,6 +86,8 @@ public class GameNFCHandler : MonoBehaviour
                 byte val = Convert.ToByte(hexString.Substring(i, 2), 16);
                 char character = Convert.ToChar(val);
                 ascii += character;
+                ascii = Regex.Replace(ascii, "\x02en", "");
+                ascii = ascii.Replace("\x02", "");
             }
             return ascii;
         }
@@ -141,7 +145,7 @@ public class GameNFCHandler : MonoBehaviour
         NfcMessanger.Figure = update;
         NfcMessanger.IsRead = false;
         if (!NfcMessanger.Initialized) { NfcMessanger.Initialized = true; }
-        DebugText1.SetText("Figure set / IsRead == " + NfcMessanger.IsRead + " / Initialized == " + NfcMessanger.Initialized);
+        DebugText1.SetText(DebugText1.text + " Figure set / IsRead == " + NfcMessanger.IsRead + " / Initialized == " + NfcMessanger.Initialized);
     }
 
     /// <summary>
@@ -150,5 +154,10 @@ public class GameNFCHandler : MonoBehaviour
     private void OnDestroy()
     {
         Connection.Unsubscribe("NFCHANDLER");
+    }
+
+    ~GameNFCHandler()
+    {
+        NFC.Instance.OnNdefDiscovered -= Instance_OnNDEFDiscovered;
     }
 }

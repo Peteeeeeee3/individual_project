@@ -201,7 +201,7 @@ def register_figure(message):
             figure = dict(tempFigureContainer)
             numFigures = len(user['figures'])
             convertedFigure = {
-                "_id": figure['_id'],
+                "_id": figure['ID'],
                 "type": figure['type'],
                 "attack-range": figure['attack-range'],
                 "attack-rate": figure['attack-rate'],

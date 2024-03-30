@@ -1510,7 +1510,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0000047683716}
+  m_AnchoredPosition: {x: 0, y: -0.000015258789}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &507476016
@@ -2648,9 +2648,9 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1032820563}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
 --- !u!114 &1032820566
 MonoBehaviour:
@@ -4968,7 +4968,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1917132320}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: OnCVCBackButtonClicked
+        m_MethodName: OnRFBackButtonClicked
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5532,7 +5532,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MainCanvas: {fileID: 1349249195}
   CharactersViewCanvas: {fileID: 139900416}
-  RegisterFigureCanvas: {fileID: 0}
+  RegisterFigureCanvas: {fileID: 1032820565}
   ContentContainer: {fileID: 507476015}
   CVSVItemPrefab: {fileID: 7784909530575595797, guid: 9abbb22a6629955468b178428cc393cc, type: 3}
   CharacterInfoArea: {fileID: 1752682204}
@@ -5563,8 +5563,8 @@ Transform:
   m_Children:
   - {fileID: 1349249191}
   - {fileID: 139900412}
-  - {fileID: 487975922}
   - {fileID: 1032820564}
+  - {fileID: 487975922}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2026523486

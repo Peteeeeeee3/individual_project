@@ -1,5 +1,6 @@
 using distriqt.plugins.nfc;
 using System;
+using System.Text.RegularExpressions;
 using UI.Dialogs;
 using UnityEngine;
 
@@ -53,6 +54,8 @@ public class RegisterFigureNFCHandler : MonoBehaviour
                 byte val = Convert.ToByte(hexString.Substring(i, 2), 16);
                 char character = Convert.ToChar(val);
                 ascii += character;
+                ascii = Regex.Replace(ascii, "\x02en", "");
+                ascii = ascii.Replace("\x02", "");
             }
             return ascii;
         }
@@ -83,5 +86,10 @@ public class RegisterFigureNFCHandler : MonoBehaviour
 
             Connection.QueueMessage(message);
         }
+    }
+
+    ~RegisterFigureNFCHandler()
+    {
+        NFC.Instance.OnNdefDiscovered -= Instance_OnNDEFDiscovered;
     }
 }

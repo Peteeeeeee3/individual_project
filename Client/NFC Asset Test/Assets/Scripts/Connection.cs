@@ -8,7 +8,7 @@ using UnityEngine;
 
 public static class Connection
 {
-    private static string serverAddress = "34.76.173.143";
+    private static string serverAddress = "34.34.165.30";
     //private static string serverAddress = "127.0.0.1";
     private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;

@@ -53,7 +53,6 @@ public class MainMenu : MonoBehaviour
     private List<string> FiguresInfo = new List<string>();
     private bool FigureInfoReady = false;
     private int CurrentlyDisplayedFigureId = -1;
-    private RegisterFigureNFCHandler RegisterFigureNFCHandler;
 
     // Start is called before the first frame update
     void Start()
@@ -122,7 +121,7 @@ public class MainMenu : MonoBehaviour
         RegisterFigureCanvas.interactable = true;
         RegisterFigureCanvas.blocksRaycasts = true;
 
-        RegisterFigureNFCHandler = new RegisterFigureNFCHandler();
+        gameObject.AddComponent<RegisterFigureNFCHandler>();
     }
 
     /// <summary>
@@ -160,7 +159,7 @@ public class MainMenu : MonoBehaviour
         MainCanvas.interactable = true;
         MainCanvas.blocksRaycasts = true;
 
-        RegisterFigureNFCHandler = null;
+        Destroy(gameObject.GetComponent<RegisterFigureNFCHandler>());
     }
 
     /// <summary>
