@@ -53,6 +53,7 @@ public class MainMenu : MonoBehaviour
     private List<string> FiguresInfo = new List<string>();
     private bool FigureInfoReady = false;
     private int CurrentlyDisplayedFigureId = -1;
+    private bool FigureRegistered = false;
 
     // Start is called before the first frame update
     void Start()
@@ -69,6 +70,15 @@ public class MainMenu : MonoBehaviour
         {
             SetupFiguresListItems();
             FigureInfoReady = false;
+        }
+
+        if (FigureRegistered)
+        {
+            uDialog.NewDialog().
+                SetContentText("The figure has successfully been added to your account!").
+                AddButton("Close", (dialog) => dialog.Close());
+
+            FigureRegistered = false;
         }
     }
 
@@ -191,9 +201,7 @@ public class MainMenu : MonoBehaviour
         // do everyhing the backbutton does
         OnRFBackButtonClicked();
 
-        uDialog.NewDialog().
-            SetContentText("The figure has successfully been added to your account!").
-            AddButton("Close", (dialog) => dialog.Close());
+        FigureRegistered = true;
     }
 
     /// <summary>

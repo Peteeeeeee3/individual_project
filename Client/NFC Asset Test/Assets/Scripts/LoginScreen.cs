@@ -3,21 +3,37 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UI.Dialogs;
+
+enum RegisterStatus
+{
+    NONE,
+    FAILED,
+    SUCCESS
+}
 
 public class LoginScreen : MonoBehaviour
 {
     [SerializeField]
-    private RectTransform UsernameInput;
+    private RectTransform LoginUsernameInput;
     [SerializeField]
-    private Vector3 UsernameInputPos;
+    private Vector3 LoginUsernameInputPos;
     [SerializeField]
-    private RectTransform PasswordInput;
+    private RectTransform LoginPasswordInput;
     [SerializeField]
-    private Vector3 PasswordInputPos;
+    private Vector3 LoginPasswordInputPos;
     [SerializeField]
     private Button LoginButton;
     [SerializeField]
     private Vector3 LoginButtonPos;
+    [SerializeField]
+    private RectTransform RegisterUsernameInput;
+    [SerializeField]
+    private Vector3 RegisterUsernameInputPos;
+    [SerializeField]
+    private RectTransform RegisterPasswordInput;
+    [SerializeField]
+    private Vector3 RegisterPasswordInputPos;
     [SerializeField]
     private Button RegisterButton;
     [SerializeField]
@@ -29,6 +45,7 @@ public class LoginScreen : MonoBehaviour
     private bool connSuccess;
     private bool subscribed;
     private Vector3 outOfBoundPos = new Vector3(1000000, 1000000, 1000000);
+    private RegisterStatus regStatus = RegisterStatus.NONE;
 
     // Start is called before the first frame update
     void Start()
@@ -36,9 +53,11 @@ public class LoginScreen : MonoBehaviour
         connSuccess = false;
         changeScene = false;
         subscribed = false;
-        UsernameInput.GetComponent<RectTransform>().position = outOfBoundPos;
-        PasswordInput.GetComponent<RectTransform>().position = outOfBoundPos;
+        LoginUsernameInput.GetComponent<RectTransform>().position = outOfBoundPos;
+        LoginPasswordInput.GetComponent<RectTransform>().position = outOfBoundPos;
         LoginButton.GetComponent<RectTransform>().position = outOfBoundPos;
+        RegisterUsernameInput.GetComponent<RectTransform>().position = outOfBoundPos;
+        RegisterPasswordInput.GetComponent<RectTransform>().position = outOfBoundPos;
         RegisterButton.GetComponent<RectTransform>().position = outOfBoundPos;
         Thread thread = new Thread(() => Connection.Connect(out connSuccess));
         thread.Start();
@@ -51,9 +70,11 @@ public class LoginScreen : MonoBehaviour
         {
             Connection.Subscribe("LOGINSCREEN", this);
 
-            UsernameInput.GetComponent<RectTransform>().localPosition = UsernameInputPos;
-            PasswordInput.GetComponent<RectTransform>().localPosition = PasswordInputPos;
+            LoginUsernameInput.GetComponent<RectTransform>().localPosition = LoginUsernameInputPos;
+            LoginPasswordInput.GetComponent<RectTransform>().localPosition = LoginPasswordInputPos;
             LoginButton.GetComponent<RectTransform>().localPosition = LoginButtonPos;
+            RegisterUsernameInput.GetComponent<RectTransform>().localPosition = RegisterUsernameInputPos;
+            RegisterPasswordInput.GetComponent<RectTransform>().localPosition = RegisterPasswordInputPos;
             RegisterButton.GetComponent<RectTransform>().localPosition = RegisterButtonPos;
             ConnectingText.GetComponent<RectTransform>().localPosition = outOfBoundPos;
 
@@ -64,6 +85,23 @@ public class LoginScreen : MonoBehaviour
         {
             SceneManager.LoadScene("MainMenu"); // change to main menu, set to game scene for testing
         }
+
+        if (regStatus == RegisterStatus.SUCCESS)
+        {
+            uDialog.NewDialog().
+                SetContentText("Thank you for registering! Please login with your new account.").
+                AddButton("Close", (dialog) => dialog.Close());
+
+            regStatus = RegisterStatus.NONE;
+        }
+        else if (regStatus == RegisterStatus.FAILED)
+        {
+            uDialog.NewDialog().
+                SetContentText("Username already in use. Please try a different one.").
+                AddButton("Close", (dialog) => dialog.Close());
+
+            regStatus = RegisterStatus.NONE;
+        }
     }
 
     /// <summary>
@@ -71,8 +109,8 @@ public class LoginScreen : MonoBehaviour
     /// </summary>
     public void OnLoginClicked()
     {
-        TextMeshProUGUI[] UsernameTexts = UsernameInput.GetComponentsInChildren<TextMeshProUGUI>();
-        TextMeshProUGUI[] PasswordTexts = PasswordInput.GetComponentsInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI[] UsernameTexts = LoginUsernameInput.GetComponentsInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI[] PasswordTexts = LoginPasswordInput.GetComponentsInChildren<TextMeshProUGUI>();
         TextMeshProUGUI usernameText = null;
         TextMeshProUGUI passwordText = null;
         
@@ -98,12 +136,57 @@ public class LoginScreen : MonoBehaviour
             passwordText.text.Length > 0)
         {
             // validate user
-            string message = "VALIDATE USER\n" + usernameText.text + "\n" + passwordText.text;
+            string message = "VALIDATE USER\n" + 
+                usernameText.text + "\n" + 
+                passwordText.text;
             Connection.QueueMessage(message);
         }
     }
 
+    /// <summary>
+    /// Called when register button in clicked
+    /// </summary>
+    public void OnRegisterClicked()
+    {
+        TextMeshProUGUI[] UsernameTexts = RegisterUsernameInput.GetComponentsInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI[] PasswordTexts = RegisterPasswordInput.GetComponentsInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI usernameText = null;
+        TextMeshProUGUI passwordText = null;
 
+        foreach (var text in UsernameTexts)
+        {
+            if (text.name.Equals("Text"))
+            {
+                usernameText = text;
+            }
+        }
+
+        foreach (var text in PasswordTexts)
+        {
+            if (text.name.Equals("Text"))
+            {
+                passwordText = text;
+            }
+        }
+
+        if (usernameText &&
+            passwordText &&
+            usernameText.text.Length > 0 &&
+            passwordText.text.Length > 0)
+        {
+            // validate user
+            string message = "REGISTER USER\n" + 
+                usernameText.text + "\n" + 
+                passwordText.text;
+            Connection.QueueMessage(message);
+        }
+    }
+
+    /// <summary>
+    /// Handles user validation response from server
+    /// </summary>
+    /// <param name="success">Whether user was successfully validated</param>
+    /// <param name="userId">User's ID</param>
     public void OnUserValidated(bool success, string userId)
     {
         if (success)
@@ -118,11 +201,12 @@ public class LoginScreen : MonoBehaviour
     }
 
     /// <summary>
-    /// Called when register button in clicked
+    /// Handles the un-/successful registration of a user
     /// </summary>
-    public void OnRegisterClicked()
+    /// <param name="success"></param>
+    public void OnUserRegistered(bool success)
     {
-
+        regStatus = success ? RegisterStatus.SUCCESS : RegisterStatus.FAILED;
     }
 
     /// <summary>

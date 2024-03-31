@@ -8,7 +8,7 @@ using UnityEngine;
 
 public static class Connection
 {
-    private static string serverAddress = "34.34.165.30";
+    private static string serverAddress = "34.78.232.127";
     //private static string serverAddress = "127.0.0.1";
     private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;
@@ -112,6 +112,19 @@ public static class Connection
                         MainMenu mainMenu = (MainMenu)monoBehaviour;
                         mainMenu.OnFigureRegistered();
                     }
+                    else if (responseLines[0].Equals("USER REGISTERED"))
+                    {
+                        subscribers.TryGetValue("LOGINSCREEN", out MonoBehaviour monoBehaviour);
+                        LoginScreen loginScreen = (LoginScreen)monoBehaviour;
+                        loginScreen.OnUserRegistered(true);
+                    }
+                    else if (responseLines[0].Equals("USERNAME IN USE"))
+                    {
+                        subscribers.TryGetValue("LOGINSCREEN", out MonoBehaviour monoBehaviour);
+                        LoginScreen loginScreen = (LoginScreen)monoBehaviour;
+                        loginScreen.OnUserRegistered(false);
+                    }
+
                 }
             }
             catch (Exception ex)

@@ -224,6 +224,23 @@ def register_figure(message):
 
 
 #!#######################################
+#! Function to handle getting a user    #
+#!#######################################
+def register_user(message):
+    tempUserContainer = db.Users.find_one({"username": message[0]})
+    print(tempUserContainer)
+    if tempUserContainer == None:
+        userId = bson.ObjectId()
+        db.Users.insert_one({"_id": userId, "username": message[0], "password": message[1], "figures": []})
+        return "USER REGISTERED"
+    
+    return "USERNAME IN USE"           
+#?#######################################
+#? Function end                         #
+#?#######################################
+
+
+#!#######################################
 #! Function to handle message responses #
 #!#######################################
 def handle_response(client_socket):
@@ -236,6 +253,7 @@ def handle_response(client_socket):
             messageLines = message.splitlines()
             print(messageLines)
             remove_ZWBS(messageLines)
+            print(messageLines)
             
             firstLine = messageLines[0].split()
             print(firstLine)
@@ -265,6 +283,8 @@ def handle_response(client_socket):
             elif firstLine[0] == "REGISTER":
                 if firstLine[1] == "FIGURE":
                     response = register_figure(messageLines[1:])
+                elif firstLine[1] == "USER":
+                    response = register_user(messageLines[1:])
 
             if response == None:
                 continue    
