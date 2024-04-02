@@ -46,6 +46,8 @@ public class PlayerController : MonoBehaviour
     private float radAttEndSize;
     [SerializeField]
     private float radAttGrowthRate;
+    [SerializeField]
+    private Vector3 outOfBoundsPos;
 
     // DEBUG
     [SerializeField]
@@ -214,16 +216,29 @@ public class PlayerController : MonoBehaviour
         {
             // assign new player model based on 
             bool noError = true;
+            Vector3 tempPos;
             switch (NfcMessanger.Figure.type)
             {
                 case PlayerType.BLUE:
+                    tempPos = activePlayerModel.position;
                     activePlayerModel = blueCube;
+                    blueCube.position = tempPos;
+                    greyCube.position = outOfBoundsPos;
+                    creamCube.position = outOfBoundsPos;
                     break;
                 case PlayerType.GREY:
+                    tempPos = activePlayerModel.position;
                     activePlayerModel = greyCube;
+                    blueCube.position = tempPos;
+                    blueCube.position = outOfBoundsPos;
+                    creamCube.position = outOfBoundsPos;
                     break;
                 case PlayerType.CREAM:
+                    tempPos = activePlayerModel.position;
                     activePlayerModel = creamCube;
+                    blueCube.position = tempPos;
+                    greyCube.position = outOfBoundsPos;
+                    blueCube.position = outOfBoundsPos;
                     break;
                 case PlayerType.ERROR:
                     noError = false;
