@@ -44,8 +44,9 @@ public class LoginScreen : MonoBehaviour
     private bool changeScene;
     private bool connSuccess;
     private bool subscribed;
-    private Vector3 outOfBoundPos = new Vector3(1000000, 1000000, 1000000);
+    private bool invalidLogin;
     private RegisterStatus regStatus = RegisterStatus.NONE;
+    private Vector3 outOfBoundPos = new Vector3(1000000, 1000000, 1000000);
 
     // Start is called before the first frame update
     void Start()
@@ -53,6 +54,7 @@ public class LoginScreen : MonoBehaviour
         connSuccess = false;
         changeScene = false;
         subscribed = false;
+        invalidLogin = false;
         LoginUsernameInput.GetComponent<RectTransform>().position = outOfBoundPos;
         LoginPasswordInput.GetComponent<RectTransform>().position = outOfBoundPos;
         LoginButton.GetComponent<RectTransform>().position = outOfBoundPos;
@@ -89,7 +91,7 @@ public class LoginScreen : MonoBehaviour
         if (regStatus == RegisterStatus.SUCCESS)
         {
             uDialog.NewDialog().
-                SetContentText("Thank you for registering! Please login with your new account.").
+                SetContentText("Thank you for registering! Please login.").
                 AddButton("Close", (dialog) => dialog.Close());
 
             regStatus = RegisterStatus.NONE;
@@ -101,6 +103,15 @@ public class LoginScreen : MonoBehaviour
                 AddButton("Close", (dialog) => dialog.Close());
 
             regStatus = RegisterStatus.NONE;
+        }
+
+        if (invalidLogin)
+        {
+            uDialog.NewDialog().
+                SetContentText("Login failed. Please try again.").
+                AddButton("Close", (dialog) => dialog.Close());
+
+            invalidLogin = false;
         }
     }
 
@@ -196,7 +207,7 @@ public class LoginScreen : MonoBehaviour
         }
         else
         {
-            // prompt an error popup
+            invalidLogin = true;   
         }
     }
 

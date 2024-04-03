@@ -54,6 +54,7 @@ public class MainMenu : MonoBehaviour
     private bool FigureInfoReady = false;
     private int CurrentlyDisplayedFigureId = -1;
     private bool FigureRegistered = false;
+    private bool FigureRegisterFailed = false;
 
     // Start is called before the first frame update
     void Start()
@@ -80,6 +81,14 @@ public class MainMenu : MonoBehaviour
 
             FigureRegistered = false;
         }
+        else if (FigureRegisterFailed)
+        {
+            uDialog.NewDialog().
+                SetContentText("The figure could not be added to your account!").
+                AddButton("Close", (dialog) => dialog.Close());
+
+            FigureRegisterFailed = false;
+        }    
     }
 
     /// <summary>
@@ -202,6 +211,14 @@ public class MainMenu : MonoBehaviour
         OnRFBackButtonClicked();
 
         FigureRegistered = true;
+    }
+
+    /// <summary>
+    /// Handles unsuccessful registration of a figure
+    /// </summary>
+    public void OnFigureRegisterFailed()
+    {
+        FigureRegisterFailed = true;
     }
 
     /// <summary>

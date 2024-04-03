@@ -8,7 +8,7 @@ using UnityEngine;
 
 public static class Connection
 {
-    private static string serverAddress = "34.78.232.127";
+    private static string serverAddress = "35.240.111.255";
     //private static string serverAddress = "127.0.0.1";
     private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;
@@ -105,6 +105,12 @@ public static class Connection
                             LevelManager levelManager = (LevelManager)monoBehaviour;
                             levelManager.OnCompleteLevel(responseLines, dataOffset);
                         }
+                    }
+                    else if (responseLines[0].Equals("FIGURE NOT REGISTERED"))
+                    {
+                        subscribers.TryGetValue("MAINMENU", out MonoBehaviour monoBehaviour);
+                        MainMenu mainMenu = (MainMenu)monoBehaviour;
+                        mainMenu.OnFigureRegisterFailed();
                     }
                     else if (responseLines[0].Equals("FIGURE REGISTERED"))
                     {

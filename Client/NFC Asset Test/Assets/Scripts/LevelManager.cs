@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using UI.Dialogs;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -19,6 +20,8 @@ public class LevelManager : MonoBehaviour
     private GameObject exitPortalPrefab;
     [SerializeField]
     private PlayerController playerController;
+    [SerializeField]
+    private uDialog menuDialog;
 
     private string ConnectionIdString = "LEVELMANAGER";
     private List<Enemy> highlightedEnemies = new List<Enemy>();
@@ -152,6 +155,32 @@ public class LevelManager : MonoBehaviour
 
         levelComplete = true;
     }
+
+    /// <summary>
+    /// Handles game pause
+    /// </summary>
+    public void OnGamePaused()
+    {
+        menuDialog.Show();
+        Time.timeScale = 0;
+    }
+
+    /// <summary>
+    /// Handles resuming of game
+    /// </summary>
+    public void OnGameResumed()
+    {
+        menuDialog.Close();
+        Time.timeScale = 1;
+    }
+
+    /// <summary>
+    /// Handles quitting of game scene
+    /// </summary>
+    public void OnGameQuit()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }    
 
     /// <summary>
     /// Gets the distance between two vectors

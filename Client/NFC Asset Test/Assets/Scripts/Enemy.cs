@@ -1,4 +1,5 @@
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public enum EnemyType
@@ -55,20 +56,23 @@ public class Enemy : MonoBehaviour
 
         attackTimer += Time.deltaTime;
 
-        switch (enemyType)
+        if (player.GetComponent<PlayerController>().activePlayerModel != null)
         {
-            case EnemyType.GREEN:
-                OnUpdateGreen();
-                break;
-            case EnemyType.RED:
-                OnUpdateRed();
-                break;
-            case EnemyType.VIOLET:
-                OnUpdateViolet();
-                break;
-            default:
-                Debug.Log("Unsupported enemy type.");
-                break;
+            switch (enemyType)
+            {
+                case EnemyType.GREEN:
+                    OnUpdateGreen();
+                    break;
+                case EnemyType.RED:
+                    OnUpdateRed();
+                    break;
+                case EnemyType.VIOLET:
+                    OnUpdateViolet();
+                    break;
+                default:
+                    Debug.Log("Unsupported enemy type.");
+                    break;
+            }
         }
 
         if (health <= 0)
@@ -166,25 +170,29 @@ public class Enemy : MonoBehaviour
     /// </summary>
     private void OnUpdateMovement()
     {
-        var distance = GetDistance(player.GetComponent<PlayerController>().activePlayerModel.position, enemyTransform.position);
-        if (distance < activityRange) 
-        {
-            var moveVec = player.GetComponent<PlayerController>().activePlayerModel.position - enemyTransform.position;
-            moveVec.y = 0;
-            moveVec.Normalize();
-
-            if (distance < distanceToKeep)
+        Transform activePlayerModel = player.GetComponent<PlayerController>().activePlayerModel;
+        if (activePlayerModel)
             {
-                enemyTransform.GetComponent<CharacterController>().Move(-moveVec * movementSpeed * Time.deltaTime);
-            }
-            else /*if (GetDistance(enemyTransform.position, enemyTransform.position + moveVec * movementSpeed * Time.deltaTime) > distanceToKeep)*/
+            var distance = GetDistance(activePlayerModel.position, enemyTransform.position);
+            if (distance < activityRange)
             {
-                enemyTransform.GetComponent<CharacterController>().Move(moveVec * movementSpeed * Time.deltaTime);
-            }
+                var moveVec = activePlayerModel.position - enemyTransform.position;
+                moveVec.y = 0;
+                moveVec.Normalize();
 
-            if (enemyTransform.position.y > 0) 
-            { 
-                enemyTransform.position = new Vector3(enemyTransform.position.x, 0, enemyTransform.position.z);
+                if (distance < distanceToKeep)
+                {
+                    enemyTransform.GetComponent<CharacterController>().Move(-moveVec * movementSpeed * Time.deltaTime);
+                }
+                else /*if (GetDistance(enemyTransform.position, enemyTransform.position + moveVec * movementSpeed * Time.deltaTime) > distanceToKeep)*/
+                {
+                    enemyTransform.GetComponent<CharacterController>().Move(moveVec * movementSpeed * Time.deltaTime);
+                }
+
+                if (enemyTransform.position.y > 0)
+                {
+                    enemyTransform.position = new Vector3(enemyTransform.position.x, 0, enemyTransform.position.z);
+                }
             }
         }
     }
