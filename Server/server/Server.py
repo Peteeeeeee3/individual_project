@@ -247,7 +247,7 @@ def handle_response(client_socket):
     while True:
         if (not messageQueue.empty()):
             message = messageQueue.get()
-            response = None
+            response = ""
 
             # split message into command (first line) and message lines
             messageLines = message.splitlines()
@@ -286,7 +286,7 @@ def handle_response(client_socket):
                 elif firstLine[1] == "USER":
                     response = register_user(messageLines[1:])
 
-            if response == None:
+            if response == "":
                 continue    
 
             # Send response

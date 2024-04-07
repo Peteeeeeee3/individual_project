@@ -12,24 +12,8 @@ public class RegisterFigureNFCHandler : MonoBehaviour
     void Start()
     {
         Connection.Subscribe(ConnectionIdString, this);
-        bool isNFCSupported = NFC.isSupported;
 
-        if (!isNFCSupported)
-        {
-            // Have this prompt message that device does not support NFC and then exit game upon OK button
-            return;
-        }
-
-        // set relevant MIME types
-        // this ignores all scanned MIME types not set -> records on NFC tags for this project store RTD_TEXT (texxt/plain)
-        ScanOptions scanOptions = new ScanOptions();
-        scanOptions.mimeTypes = new string[] { "text/plain" };
-
-        // register application for NFC scanning when running in foreground
-        NFC.Instance.RegisterForegroundDispatch(scanOptions);
-
-        // register Instance_OnNDEFDiscovered() to be registered to be called when NFC tag with NDEF format is detected
-        NFC.Instance.OnNdefDiscovered += Instance_OnNDEFDiscovered;
+        StaticNFCHandler.ClaimControl(NFC_TARGET_TYPE.MAIN_MENU_NFC_HANDLER, this);
     }
 
     // Update is called once per frame
@@ -67,7 +51,7 @@ public class RegisterFigureNFCHandler : MonoBehaviour
     /// Called when an NFC chip is reads
     /// </summary>
     /// <param name="e">NFC Event</param>
-    void Instance_OnNDEFDiscovered(NFCEvent e)
+    public void Instance_OnNDEFDiscovered(NFCEvent e)
     {
         // traverse all messages
         foreach (NdefMessage ndefMessage in e.tag.messages)
@@ -86,10 +70,5 @@ public class RegisterFigureNFCHandler : MonoBehaviour
 
             Connection.QueueMessage(message);
         }
-    }
-
-    ~RegisterFigureNFCHandler()
-    {
-        NFC.Instance.OnNdefDiscovered -= Instance_OnNDEFDiscovered;
     }
 }

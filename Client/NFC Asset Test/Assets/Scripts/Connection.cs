@@ -8,7 +8,7 @@ using UnityEngine;
 
 public static class Connection
 {
-    private static string serverAddress = "35.240.111.255";
+    private static string serverAddress = "34.38.169.178";
     //private static string serverAddress = "127.0.0.1";
     private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;
@@ -16,7 +16,9 @@ public static class Connection
     private static TcpClient client;
     private static Thread receivingThread;
     private static Thread sendingThread;
-    private static Queue<string> messageQueue = new Queue<string>();
+    private static Thread processingThread;
+    private static Queue<string> outboundMessageQueue = new Queue<string>();
+    private static Queue<string> inboundMessageQueue = new Queue<string>();
     private static Dictionary<string, MonoBehaviour> subscribers = new Dictionary<string, MonoBehaviour>();
 
     /// <summary>
@@ -31,10 +33,13 @@ public static class Connection
             client.Connect(serverIP, serverPort);
             Debug.Log($"Connected to server at {serverAddress}:{serverPort}");
 
-            receivingThread = new Thread(() => ReceiveMessages(client));
+            receivingThread = new Thread(() => ReceiveInboundMessages(client));
             receivingThread.Start();
 
-            sendingThread = new Thread(() => SendMessages());
+            processingThread = new Thread(() => ProcessInboundMessages());
+            processingThread.Start();
+
+            sendingThread = new Thread(() => SendOutboundMessages());
             sendingThread.Start();
 
             success = true;
@@ -52,7 +57,7 @@ public static class Connection
     /// Run as a thread to process incoming messages
     /// </summary>
     /// <param name="client">TCP client used for connection</param>
-    static void ReceiveMessages(TcpClient client)
+    static void ReceiveInboundMessages(TcpClient client)
     {
         // Receive data from the server
         byte[] buffer = new byte[1024];
@@ -63,7 +68,29 @@ public static class Connection
                 NetworkStream stream = client.GetStream();
                 int bytesRead = stream.Read(buffer, 0, buffer.Length);
                 string receivedMessage = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                inboundMessageQueue.Enqueue(receivedMessage);
+            }
+            catch (Exception ex)
+            {
+                Debug.Log($"Error in receiving message: {ex.Message}");
+                outboundMessageQueue.Enqueue(ex.Message);
+            }
+        }
+    }
 
+    /// <summary>
+    /// Run as a thread to precess inbound messages
+    /// </summary>
+    static void ProcessInboundMessages()
+    {
+        while (true)
+        {
+            // skip if no messages in queue
+            if (inboundMessageQueue.Count == 0) { continue; }
+
+            string receivedMessage = inboundMessageQueue.Dequeue();
+            try
+            {
                 // check for successful message reception
                 if (receivedMessage.Length > 0)
                 {
@@ -130,12 +157,12 @@ public static class Connection
                         LoginScreen loginScreen = (LoginScreen)monoBehaviour;
                         loginScreen.OnUserRegistered(false);
                     }
-
                 }
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Debug.Log($"Error in receiving message: {ex.Message}");
+                Debug.LogException(e);
+                QueueMessage(e.Message);
             }
         }
     }
@@ -166,19 +193,19 @@ public static class Connection
     /// <param name="message">Message to be added to queue</param>
     public static void QueueMessage(string message)
     {
-        messageQueue.Enqueue(message);
+        outboundMessageQueue.Enqueue(message);
     }
 
     /// <summary>
     /// Called to send all messages in message queue to server
     /// </summary>
-    private static void SendMessages()
+    private static void SendOutboundMessages()
     {
         while (true)
         {
-            if (messageQueue.Count > 0)
+            if (outboundMessageQueue.Count > 0)
             {
-                string message = messageQueue.Dequeue();
+                string message = outboundMessageQueue.Dequeue();
                 NetworkStream stream = client.GetStream();
                 byte[] data = Encoding.UTF8.GetBytes(message);
                 stream.Write(data, 0, data.Length);

@@ -63,6 +63,19 @@ public class LoginScreen : MonoBehaviour
         RegisterButton.GetComponent<RectTransform>().position = outOfBoundPos;
         Thread thread = new Thread(() => Connection.Connect(out connSuccess));
         thread.Start();
+
+        if (!StaticNFCHandler.IsNfcSupported())
+        {
+            uDialog.NewDialog().
+                SetContentText("NFC is not supported by your device. Gameplay will be limited or impossible.").
+                SetContentFontSize(10).
+                AddButton("Close", (dialog) => dialog.Close());
+        }
+        else
+        {
+            StaticNFCHandler.Activate();
+        }
+
     }
 
     // Update is called once per frame

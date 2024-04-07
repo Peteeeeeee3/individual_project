@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
     //
 
     public float health { get; set; }
-    public Transform activePlayerModel { get; private set; }
+    public Transform activePlayerModel { get; private set; } = null;
     public Figure activePlayer { get; private set; }
     private float attackTimer = 0;
     private Dictionary<PlayerType, float> timerResetDict;
@@ -70,26 +70,22 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // REMOVE THIS - START
-        /*activePlayerModel = greyCube; // temp for testing only
-        activePlayerID = "NFC-GAME-FIGURE-1708202131970";
-        activePlayerType = PlayerType.GREY;
-        health = 200;*/
-        // REMOVE THIS - END
         timerResetDict = new Dictionary<PlayerType, float>
         {
             { PlayerType.BLUE, blueAttackInterval },
             { PlayerType.GREY, greyAttackInterval },
             { PlayerType.CREAM, creamAttackInterval }
         };
+
+        blueCube.position = outOfBoundsPos;
+        greyCube.position = outOfBoundsPos;
+        creamCube.position = outOfBoundsPos;
         Time.timeScale = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
-        ReadMessanger();
-
         if (!isReady) { return; }
 
         OnUpdatePlayer();
@@ -100,7 +96,20 @@ public class PlayerController : MonoBehaviour
             OnUpdateRadialAttack();
         }
 
+        if (activePlayerModel != null)
+        {
+            DebugText2.SetText("Active Player Model is set!");
+        }
+        else
+        {
+            DebugText2.SetText("Active Player Model is null!");
+        }
         DebugText5.SetText("Health: " + health);
+    }
+
+    void LateUpdate()
+    {
+        ReadMessanger();
     }
 
     /// <summary>
@@ -112,6 +121,8 @@ public class PlayerController : MonoBehaviour
         Vector3 moveVec = new Vector3(movementJoystick.Horizontal, 0, movementJoystick.Vertical);
         moveVec.Normalize();
         activePlayerModel.GetComponent<CharacterController>().Move(moveVec * moveSpeed * Time.deltaTime);
+        Connection.QueueMessage("CharacterController post position update: " + activePlayerModel.position.ToString());
+        DebugText3.SetText(activePlayerModel.position.ToString());
         
         // make sure player is always on the ground
         if (activePlayerModel.position.y != 5)
@@ -214,31 +225,32 @@ public class PlayerController : MonoBehaviour
         if (!NfcMessanger.IsRead &&
             NfcMessanger.Initialized)
         {
+            Connection.QueueMessage("2: IsRead == " + NfcMessanger.IsRead.ToString() + " Initialized == " + NfcMessanger.Initialized.ToString());
             // assign new player model based on 
             bool noError = true;
-            Vector3 tempPos;
             switch (NfcMessanger.Figure.type)
             {
                 case PlayerType.BLUE:
-                    tempPos = activePlayerModel.position;
+                    blueCube.position = activePlayerModel != null ? activePlayerModel.position : new Vector3(0f, 5f, 0f);
                     activePlayerModel = blueCube;
-                    blueCube.position = tempPos;
                     greyCube.position = outOfBoundsPos;
                     creamCube.position = outOfBoundsPos;
+                    Connection.QueueMessage("DEBUG\nPos: " + activePlayerModel.position.x.ToString() + ", " + 
+                        activePlayerModel.position.y.ToString() + ", " + activePlayerModel.position.z.ToString());
+                    Connection.QueueMessage("DEBUG\nPos: " + blueCube.position.x.ToString() + ", " +
+                        blueCube.position.y.ToString() + ", " + blueCube.position.z.ToString());
                     break;
                 case PlayerType.GREY:
-                    tempPos = activePlayerModel.position;
+                    greyCube.position = activePlayerModel != null ? activePlayerModel.position : new Vector3(0f, 5f, 0f);
                     activePlayerModel = greyCube;
-                    blueCube.position = tempPos;
                     blueCube.position = outOfBoundsPos;
                     creamCube.position = outOfBoundsPos;
                     break;
                 case PlayerType.CREAM:
-                    tempPos = activePlayerModel.position;
+                    creamCube.position = activePlayerModel != null ? activePlayerModel.position : new Vector3(0f, 5f, 0f);
                     activePlayerModel = creamCube;
-                    blueCube.position = tempPos;
-                    greyCube.position = outOfBoundsPos;
                     blueCube.position = outOfBoundsPos;
+                    greyCube.position = outOfBoundsPos;
                     break;
                 case PlayerType.ERROR:
                     noError = false;
@@ -246,7 +258,7 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("Invalid or unsupported player model");
                     break;
             }
-
+            Connection.QueueMessage("noError == " + noError.ToString());
             // update all active player information only if all data is valid for use
             if (noError)
             {
@@ -254,10 +266,10 @@ public class PlayerController : MonoBehaviour
                 isReady = true;
                 Time.timeScale = 1;
                 gameNotReadyPanel.GetComponent<RectTransform>().position = new Vector3(100000000, 100000000, 1);
+                DebugText2.SetText("Messanger Read");
             }
 
             NfcMessanger.IsRead = true;
-            DebugText2.SetText("ReadMessanger: noError == " + noError + " / isReady == " + isReady + " / IsRead == " + NfcMessanger.IsRead);
         }
     }
 
