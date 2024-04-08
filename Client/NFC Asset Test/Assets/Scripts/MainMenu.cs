@@ -211,6 +211,7 @@ public class MainMenu : MonoBehaviour
         OnRFBackButtonClicked();
 
         FigureRegistered = true;
+        Connection.QueueMessage("FR-Bool == " + FigureRegistered.ToString());
     }
 
     /// <summary>
@@ -219,6 +220,7 @@ public class MainMenu : MonoBehaviour
     public void OnFigureRegisterFailed()
     {
         FigureRegisterFailed = true;
+        Connection.QueueMessage("FRF-Bool == " + FigureRegistered.ToString());
     }
 
     /// <summary>
@@ -304,7 +306,10 @@ public class MainMenu : MonoBehaviour
             MoveSpeedUpgradeButton.interactable = true;
             DamageUpgradeButton.interactable = true;
             AttackRateUpgradeButton.interactable = true;
-            AttackRangeUpgradeButton.interactable = true;
+            if (selectedFigure.type == PlayerType.GREY)
+            {
+                AttackRangeUpgradeButton.interactable = true;
+            }
 
             if (FindCurrentMoveSpeedUpgrade(selectedFigure) == Globals.MOVE_SPEED_UPGRADE_VALUES.Count - 1)
             {
@@ -428,6 +433,8 @@ public class MainMenu : MonoBehaviour
                 figure.moveSpeed;
 
             Connection.QueueMessage(message);
+
+            MoveSpeedText.SetText("Move Speed: " + figure.moveSpeed.ToString());
         }
     }
     
@@ -449,6 +456,8 @@ public class MainMenu : MonoBehaviour
                 figure.damage;
 
             Connection.QueueMessage(message);
+
+            MoveSpeedText.SetText("Damage: " + figure.damage.ToString());
         }
     }
 
@@ -470,6 +479,8 @@ public class MainMenu : MonoBehaviour
                 figure.attackRate;
 
             Connection.QueueMessage(message);
+
+            MoveSpeedText.SetText("Attack Speed: " + figure.attackRate.ToString());
         }
     }
 
@@ -491,6 +502,8 @@ public class MainMenu : MonoBehaviour
                 figure.attackRange;
 
             Connection.QueueMessage(message);
+
+            MoveSpeedText.SetText("Explosion Size: " + figure.attackRange.ToString());
         }
     }
 

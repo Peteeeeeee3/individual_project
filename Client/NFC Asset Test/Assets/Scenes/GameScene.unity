@@ -5287,8 +5287,8 @@ MonoBehaviour:
   gameNotReadyPanel: {fileID: 596735676}
   radialAttackPrefab: {fileID: 4067632283919052738, guid: bb464edae6b52ab4b8d60819add81e23, type: 3}
   radAttStartSize: 0
-  radAttEndSize: 1
-  radAttGrowthRate: 3
+  radAttEndSize: 1.8
+  radAttGrowthRate: 6
   outOfBoundsPos: {x: 9999, y: -9999, z: 9999}
   DebugText2: {fileID: 1906591349}
   DebugText3: {fileID: 383628548}
@@ -17771,7 +17771,7 @@ MonoBehaviour:
   - {fileID: 734763006}
   - {fileID: 988212184}
   outline: {fileID: 2100000, guid: acd8f714506fd6540a36a074eb7f1491, type: 2}
-  highlightedEnemyCount: 20
+  highlightedEnemyCount: 15
   DebugText4: {fileID: 995369300}
   exitPortalPrefab: {fileID: 3744133877081091469, guid: a2a060732547fe64581bb0cb3c2bdf1d, type: 3}
   playerController: {fileID: 486942262}

@@ -136,7 +136,6 @@ public class GameNFCHandler : MonoBehaviour
         NfcMessanger.Figure = update;
         NfcMessanger.IsRead = false;
         NfcMessanger.Initialized = true;
-        Connection.QueueMessage("Messanger update complete! Initialized == " + NfcMessanger.Initialized.ToString());
     }
 
     /// <summary>

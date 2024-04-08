@@ -12,28 +12,28 @@ public static class Globals
     };
     public static Dictionary<string, float> BLUE_DEFAULY_STATS = new Dictionary<string, float>()
     {
-        { "move-speed", 150 },
+        { "move-speed", 120 },
         { "damage", 10 },
         { "fire-rate", 0.7f },
         { "explosion-range", 0 }
     };
     public static Dictionary<string, float> GREY_DEFAULT_STATS = new Dictionary<string, float>()
     {
-        { "move-speed", 150 },
-        { "damage", 30 },
+        { "move-speed", 120 },
+        { "damage", 20 },
         { "fire-rate", 0.7f },
         { "explosion-range", 1 }
     };
     public static Dictionary<string, float> CREAM_DEFAULT_STATS = new Dictionary<string, float>()
     {
-        { "move-speed", 150 },
+        { "move-speed", 120 },
         { "damage", 8 },
         { "fire-rate", 0.7f },
         { "explosion-range", 0 }
     };
     public static List<float> MOVE_SPEED_UPGRADE_VALUES = new List<float>()
     {
-        150, 160, 170, 180, 190, 200
+        120, 130, 140, 150, 160, 170
     };
     public static Dictionary<PlayerType, List<float>> DAMAGE_UPGRADE_VALUES = new Dictionary<PlayerType, List<float>>()
     {
@@ -46,7 +46,7 @@ public static class Globals
         { 
             PlayerType.GREY, new List<float>()
             {
-                30, 32, 34, 36, 38, 40
+                20, 22, 24, 26, 28, 30
             }
         },
         { 

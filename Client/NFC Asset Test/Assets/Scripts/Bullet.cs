@@ -11,8 +11,6 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     private float expAttStartSize;
     [SerializeField]
-    private float expAttFinalSize;
-    [SerializeField]
     private float expAttGrowthRate;
     [SerializeField]
     private float ttl; // Time To Live
@@ -21,6 +19,7 @@ public class Bullet : MonoBehaviour
     public float damage { get; set; }
     public string ownerTag { get; set; }
     public bool isGrenade { get; set; }
+    public float expAttFinalSize { get; set; } = 1;
 
     private Transform explosion;
     private float ttlTimer = 0;

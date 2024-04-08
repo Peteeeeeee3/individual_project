@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UI.Dialogs;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,6 +27,7 @@ public class LevelManager : MonoBehaviour
     private GameObject exitPortal;
     private bool messageSent = false;
     private bool levelComplete = false;
+    private bool playerDied = false;
 
     // Start is called before the first frame update
     void Start()
@@ -87,6 +87,14 @@ public class LevelManager : MonoBehaviour
         if (levelComplete)
         {
             SceneManager.LoadScene("MainMenu");
+        }
+
+        if (playerController.health <= 0 &&
+            playerController.activePlayerModel &&
+            !playerDied)
+        {
+            HandlePlayerDeath();
+            playerDied = true;
         }
     }
 
@@ -157,6 +165,22 @@ public class LevelManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Handles when the player's health reaches zero or below
+    /// </summary>
+    private void HandlePlayerDeath()
+    {
+        Time.timeScale = 0;
+
+        uDialog.NewDialog().
+                SetContentText("You died...").
+                AddButton(":(", (dialog) => {
+                    dialog.Close();
+                    Time.timeScale = 1;
+                    SceneManager.LoadScene("MainMenu");
+                    });
+    }
+
+    /// <summary>
     /// Handles game pause
     /// </summary>
     public void OnGamePaused()
@@ -179,6 +203,7 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     public void OnGameQuit()
     {
+        Time.timeScale = 1;
         SceneManager.LoadScene("MainMenu");
     }    
 

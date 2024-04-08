@@ -80,7 +80,8 @@ public class PlayerController : MonoBehaviour
         blueCube.position = outOfBoundsPos;
         greyCube.position = outOfBoundsPos;
         creamCube.position = outOfBoundsPos;
-        Time.timeScale = 0;
+
+        Connection.QueueMessage("PlayerController Start() called!");
     }
 
     // Update is called once per frame
@@ -121,7 +122,6 @@ public class PlayerController : MonoBehaviour
         Vector3 moveVec = new Vector3(movementJoystick.Horizontal, 0, movementJoystick.Vertical);
         moveVec.Normalize();
         activePlayerModel.GetComponent<CharacterController>().Move(moveVec * moveSpeed * Time.deltaTime);
-        Connection.QueueMessage("CharacterController post position update: " + activePlayerModel.position.ToString());
         DebugText3.SetText(activePlayerModel.position.ToString());
         
         // make sure player is always on the ground
@@ -154,13 +154,13 @@ public class PlayerController : MonoBehaviour
                         GameObject bullet1 = Instantiate(bulletPrefab, activePlayerModel.position - normVec * bulletOffset, Quaternion.identity);
                         Bullet bulletComp1 = bullet1.GetComponent<Bullet>();
                         bulletComp1.moveDir = attackVec;
-                        bulletComp1.damage = 10;
+                        bulletComp1.damage = activePlayer.damage;
                         bulletComp1.ownerTag = "Player";
                         bulletComp1.isGrenade = false;
                         GameObject bullet2 = Instantiate(bulletPrefab, activePlayerModel.position + normVec * bulletOffset, Quaternion.identity);
                         Bullet bulletComp2 = bullet2.GetComponent<Bullet>();
                         bulletComp2.moveDir = attackVec;
-                        bulletComp2.damage = 10;
+                        bulletComp2.damage = activePlayer.damage;
                         bulletComp2.ownerTag = "Player";
                         bulletComp2.isGrenade = false;
                         break;
@@ -170,7 +170,8 @@ public class PlayerController : MonoBehaviour
                         GameObject grenade = Instantiate(bulletPrefab, activePlayerModel.position, Quaternion.identity);
                         Bullet grenadeBullet = grenade.GetComponent<Bullet>();
                         grenadeBullet.moveDir = attackVec;
-                        grenadeBullet.damage = 40;
+                        grenadeBullet.expAttFinalSize = activePlayer.attackRange;
+                        grenadeBullet.damage = activePlayer.damage;
                         grenadeBullet.ownerTag = "Player";
                         grenadeBullet.isGrenade = true;
                         break;
@@ -178,7 +179,7 @@ public class PlayerController : MonoBehaviour
                     case PlayerType.CREAM:
                         radialAttack = Instantiate(radialAttackPrefab, activePlayerModel.position - new Vector3(0, 3, 0), Quaternion.identity).GetComponent<Transform>();
                         radialAttack.localScale = new Vector3(radAttStartSize, 1, radAttStartSize);
-                        radialAttack.GetComponent<RadialAttackAttributes>().damage = 10;
+                        radialAttack.GetComponent<RadialAttackAttributes>().damage = activePlayer.damage;
                         break;
 
                     case PlayerType.ERROR:
@@ -235,10 +236,6 @@ public class PlayerController : MonoBehaviour
                     activePlayerModel = blueCube;
                     greyCube.position = outOfBoundsPos;
                     creamCube.position = outOfBoundsPos;
-                    Connection.QueueMessage("DEBUG\nPos: " + activePlayerModel.position.x.ToString() + ", " + 
-                        activePlayerModel.position.y.ToString() + ", " + activePlayerModel.position.z.ToString());
-                    Connection.QueueMessage("DEBUG\nPos: " + blueCube.position.x.ToString() + ", " +
-                        blueCube.position.y.ToString() + ", " + blueCube.position.z.ToString());
                     break;
                 case PlayerType.GREY:
                     greyCube.position = activePlayerModel != null ? activePlayerModel.position : new Vector3(0f, 5f, 0f);
@@ -263,8 +260,8 @@ public class PlayerController : MonoBehaviour
             if (noError)
             {
                 activePlayer = NfcMessanger.Figure;
+                health = 400;
                 isReady = true;
-                Time.timeScale = 1;
                 gameNotReadyPanel.GetComponent<RectTransform>().position = new Vector3(100000000, 100000000, 1);
                 DebugText2.SetText("Messanger Read");
             }
