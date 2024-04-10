@@ -14,7 +14,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField]
     private int highlightedEnemyCount;
     [SerializeField]
-    private TextMeshProUGUI DebugText4;
+    private TextMeshProUGUI EnemyCountText;
     [SerializeField]
     private GameObject exitPortalPrefab;
     [SerializeField]
@@ -57,7 +57,7 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DebugText4.SetText("Required Enemies Left: " + highlightedEnemies.Count + "       Enemies Left: " + enemies.Count);
+        EnemyCountText.SetText("Required Enemies Left: " + highlightedEnemies.Count + "       Total Enemies Left: " + enemies.Count + highlightedEnemies.Count);
     
         if (highlightedEnemies.Count == 0 && !exitPortal)
         {

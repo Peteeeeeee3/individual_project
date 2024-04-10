@@ -1,4 +1,3 @@
-using distriqt.plugins.nfc;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -47,14 +46,19 @@ public class MainMenu : MonoBehaviour
     private TextMeshProUGUI AttackRangeText;
     [SerializeField]
     private Button AttackRangeUpgradeButton;
-
+    [SerializeField]
+    private uDialog RegisterFigureSuccessDialog;
+    [SerializeField]
+    private uDialog RegisterFigureFailedDialog;
+    [SerializeField]
+    private uDialog FailedToRetrieveFiguresDialog;
+    [SerializeField]
+    private uDialog FigureAlreadyOwnedDialog;
 
     private List<Figure> CVFigures = new List<Figure>();
     private List<string> FiguresInfo = new List<string>();
     private bool FigureInfoReady = false;
     private int CurrentlyDisplayedFigureId = -1;
-    private bool FigureRegistered = false;
-    private bool FigureRegisterFailed = false;
 
     // Start is called before the first frame update
     void Start()
@@ -72,23 +76,6 @@ public class MainMenu : MonoBehaviour
             SetupFiguresListItems();
             FigureInfoReady = false;
         }
-
-        if (FigureRegistered)
-        {
-            uDialog.NewDialog().
-                SetContentText("The figure has successfully been added to your account!").
-                AddButton("Close", (dialog) => dialog.Close());
-
-            FigureRegistered = false;
-        }
-        else if (FigureRegisterFailed)
-        {
-            uDialog.NewDialog().
-                SetContentText("The figure could not be added to your account!").
-                AddButton("Close", (dialog) => dialog.Close());
-
-            FigureRegisterFailed = false;
-        }    
     }
 
     /// <summary>
@@ -189,7 +176,7 @@ public class MainMenu : MonoBehaviour
     {
         if (figuresInfo[0].Equals("ERROR FIGURES"))
         {
-            // toggle popup
+            FailedToRetrieveFiguresDialog.Show();
         }
         else
         {
@@ -210,8 +197,7 @@ public class MainMenu : MonoBehaviour
         // do everyhing the backbutton does
         OnRFBackButtonClicked();
 
-        FigureRegistered = true;
-        Connection.QueueMessage("FR-Bool == " + FigureRegistered.ToString());
+        RegisterFigureSuccessDialog.Show();
     }
 
     /// <summary>
@@ -219,8 +205,15 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void OnFigureRegisterFailed()
     {
-        FigureRegisterFailed = true;
-        Connection.QueueMessage("FRF-Bool == " + FigureRegistered.ToString());
+        RegisterFigureFailedDialog.Show();
+    }
+
+    /// <summary>
+    /// Handles unsuccessful registration due to figure already being owned
+    /// </summary>
+    public void OnFigureAlreadyOwned()
+    {
+        FigureAlreadyOwnedDialog.Show();
     }
 
     /// <summary>

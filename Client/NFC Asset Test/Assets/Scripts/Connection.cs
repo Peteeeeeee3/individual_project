@@ -89,6 +89,7 @@ public static class Connection
             if (inboundMessageQueue.Count == 0) { continue; }
 
             string receivedMessage = inboundMessageQueue.Dequeue();
+            Connection.QueueMessage("DEBUG\nInbound Message: " + receivedMessage);
             try
             {
                 // check for successful message reception
@@ -100,22 +101,19 @@ public static class Connection
                     if (responseLines[0].Equals("INVALID USER"))
                     {
                         subscribers.TryGetValue("LOGINSCREEN", out MonoBehaviour monoBehaviour);
-                        LoginScreen loginScreen = (LoginScreen)monoBehaviour;
-                        loginScreen.OnUserValidated(false, "");
+                        ((LoginScreen)monoBehaviour).OnUserValidated(false, "");
                     }
                     else if (responseLines[0].Equals("VALID USER"))
                     {
                         subscribers.TryGetValue("LOGINSCREEN", out MonoBehaviour monoBehaviour);
-                        LoginScreen loginScreen = (LoginScreen)monoBehaviour;
-                        loginScreen.OnUserValidated(true, responseLines[1]);
+                        ((LoginScreen)monoBehaviour).OnUserValidated(true, responseLines[1]);
                     }
                     // get figures
                     else if (responseLines[0].Equals("ERROR FIGURES") ||
                         responseLines[0].Equals("SUCCESS FIGURES"))
                     {
                         subscribers.TryGetValue("MAINMENU", out MonoBehaviour monoBehaviour);
-                        MainMenu mainMenu = (MainMenu)monoBehaviour;
-                        mainMenu.OnAllFiguresReceived(responseLines);
+                        ((MainMenu)monoBehaviour).OnAllFiguresReceived(responseLines);
                     }
                     // if figure is not found, then no need to handle as nothing should take place
                     else if (responseLines[0].Equals("FIGURE FOUND"))
@@ -136,26 +134,27 @@ public static class Connection
                     else if (responseLines[0].Equals("FIGURE NOT REGISTERED"))
                     {
                         subscribers.TryGetValue("MAINMENU", out MonoBehaviour monoBehaviour);
-                        MainMenu mainMenu = (MainMenu)monoBehaviour;
-                        mainMenu.OnFigureRegisterFailed();
+                        ((MainMenu)monoBehaviour).OnFigureRegisterFailed();
+                    }
+                    else if (responseLines[0].Equals("FIGURE ALREADY OWNED"))
+                    {
+                        subscribers.TryGetValue("MAINMENU", out MonoBehaviour monoBehaviour);
+                        ((MainMenu)monoBehaviour).OnFigureAlreadyOwned();
                     }
                     else if (responseLines[0].Equals("FIGURE REGISTERED"))
                     {
                         subscribers.TryGetValue("MAINMENU", out MonoBehaviour monoBehaviour);
-                        MainMenu mainMenu = (MainMenu)monoBehaviour;
-                        mainMenu.OnFigureRegistered();
+                        ((MainMenu)monoBehaviour).OnFigureRegistered();
                     }
                     else if (responseLines[0].Equals("USER REGISTERED"))
                     {
                         subscribers.TryGetValue("LOGINSCREEN", out MonoBehaviour monoBehaviour);
-                        LoginScreen loginScreen = (LoginScreen)monoBehaviour;
-                        loginScreen.OnUserRegistered(true);
+                        ((LoginScreen)monoBehaviour).OnUserRegistered(true);
                     }
                     else if (responseLines[0].Equals("USERNAME IN USE"))
                     {
                         subscribers.TryGetValue("LOGINSCREEN", out MonoBehaviour monoBehaviour);
-                        LoginScreen loginScreen = (LoginScreen)monoBehaviour;
-                        loginScreen.OnUserRegistered(false);
+                        ((LoginScreen)monoBehaviour).OnUserRegistered(false);
                     }
                 }
             }

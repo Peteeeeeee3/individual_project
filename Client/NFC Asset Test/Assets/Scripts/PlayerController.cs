@@ -48,15 +48,8 @@ public class PlayerController : MonoBehaviour
     private float radAttGrowthRate;
     [SerializeField]
     private Vector3 outOfBoundsPos;
-
-    // DEBUG
     [SerializeField]
-    private TextMeshProUGUI DebugText2;
-    [SerializeField]
-    private TextMeshProUGUI DebugText3;
-    [SerializeField]
-    private TextMeshProUGUI DebugText5;
-    //
+    private TextMeshProUGUI HealthText;
 
     public float health { get; set; }
     public Transform activePlayerModel { get; private set; } = null;
@@ -97,15 +90,7 @@ public class PlayerController : MonoBehaviour
             OnUpdateRadialAttack();
         }
 
-        if (activePlayerModel != null)
-        {
-            DebugText2.SetText("Active Player Model is set!");
-        }
-        else
-        {
-            DebugText2.SetText("Active Player Model is null!");
-        }
-        DebugText5.SetText("Health: " + health);
+        HealthText.SetText("Health: " + health);
     }
 
     void LateUpdate()
@@ -122,7 +107,6 @@ public class PlayerController : MonoBehaviour
         Vector3 moveVec = new Vector3(movementJoystick.Horizontal, 0, movementJoystick.Vertical);
         moveVec.Normalize();
         activePlayerModel.GetComponent<CharacterController>().Move(moveVec * moveSpeed * Time.deltaTime);
-        DebugText3.SetText(activePlayerModel.position.ToString());
         
         // make sure player is always on the ground
         if (activePlayerModel.position.y != 5)
@@ -260,10 +244,9 @@ public class PlayerController : MonoBehaviour
             if (noError)
             {
                 activePlayer = NfcMessanger.Figure;
-                health = 400;
+                health = 500;
                 isReady = true;
                 gameNotReadyPanel.GetComponent<RectTransform>().position = new Vector3(100000000, 100000000, 1);
-                DebugText2.SetText("Messanger Read");
             }
 
             NfcMessanger.IsRead = true;

@@ -15,6 +15,10 @@ enum RegisterStatus
 public class LoginScreen : MonoBehaviour
 {
     [SerializeField]
+    private Transform LoginText;
+    [SerializeField]
+    private Vector3 LoginTextPos;
+    [SerializeField]
     private RectTransform LoginUsernameInput;
     [SerializeField]
     private Vector3 LoginUsernameInputPos;
@@ -27,6 +31,10 @@ public class LoginScreen : MonoBehaviour
     [SerializeField]
     private Vector3 LoginButtonPos;
     [SerializeField]
+    private Transform RegisterText;
+    [SerializeField] 
+    private Vector3 RegisterTextPos;
+    [SerializeField]
     private RectTransform RegisterUsernameInput;
     [SerializeField]
     private Vector3 RegisterUsernameInputPos;
@@ -38,6 +46,10 @@ public class LoginScreen : MonoBehaviour
     private Button RegisterButton;
     [SerializeField]
     private Vector3 RegisterButtonPos;
+    [SerializeField]
+    private Transform SeparationBar;
+    [SerializeField]
+    private Vector3 SeparationBarPos;
     [SerializeField]
     private TextMeshProUGUI ConnectingText;
 
@@ -55,9 +67,11 @@ public class LoginScreen : MonoBehaviour
         changeScene = false;
         subscribed = false;
         invalidLogin = false;
+        LoginText.position = outOfBoundPos;
         LoginUsernameInput.GetComponent<RectTransform>().position = outOfBoundPos;
         LoginPasswordInput.GetComponent<RectTransform>().position = outOfBoundPos;
         LoginButton.GetComponent<RectTransform>().position = outOfBoundPos;
+        RegisterText.position = outOfBoundPos;
         RegisterUsernameInput.GetComponent<RectTransform>().position = outOfBoundPos;
         RegisterPasswordInput.GetComponent<RectTransform>().position = outOfBoundPos;
         RegisterButton.GetComponent<RectTransform>().position = outOfBoundPos;
@@ -85,13 +99,16 @@ public class LoginScreen : MonoBehaviour
         {
             Connection.Subscribe("LOGINSCREEN", this);
 
+            LoginText.localPosition = LoginTextPos;
             LoginUsernameInput.GetComponent<RectTransform>().localPosition = LoginUsernameInputPos;
             LoginPasswordInput.GetComponent<RectTransform>().localPosition = LoginPasswordInputPos;
             LoginButton.GetComponent<RectTransform>().localPosition = LoginButtonPos;
+            RegisterText.localPosition = RegisterTextPos;
             RegisterUsernameInput.GetComponent<RectTransform>().localPosition = RegisterUsernameInputPos;
             RegisterPasswordInput.GetComponent<RectTransform>().localPosition = RegisterPasswordInputPos;
             RegisterButton.GetComponent<RectTransform>().localPosition = RegisterButtonPos;
             ConnectingText.GetComponent<RectTransform>().localPosition = outOfBoundPos;
+            SeparationBar.localPosition = SeparationBarPos;
 
             subscribed = true;
         }
@@ -104,6 +121,7 @@ public class LoginScreen : MonoBehaviour
         if (regStatus == RegisterStatus.SUCCESS)
         {
             uDialog.NewDialog().
+                SetTitleText("Success!").
                 SetContentText("Thank you for registering! Please login.").
                 AddButton("Close", (dialog) => dialog.Close());
 
@@ -112,6 +130,7 @@ public class LoginScreen : MonoBehaviour
         else if (regStatus == RegisterStatus.FAILED)
         {
             uDialog.NewDialog().
+                SetTitleText("Error!").
                 SetContentText("Username already in use. Please try a different one.").
                 AddButton("Close", (dialog) => dialog.Close());
 
@@ -121,6 +140,7 @@ public class LoginScreen : MonoBehaviour
         if (invalidLogin)
         {
             uDialog.NewDialog().
+                SetTitleText("Error!").
                 SetContentText("Login failed. Please try again.").
                 AddButton("Close", (dialog) => dialog.Close());
 
