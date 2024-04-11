@@ -1,17 +1,4 @@
-# class Message:
-#     # store message structure and handle message creation
-#     pass
-
-
-# class Trade:
-#     # use to handle trades
-#     # stores the progress and interactions of users
-#     # using this will not stop server when waiting for a response
-#     pass
-
-
 import queue, socket, threading, pymongo, bson
-from enum import Enum
 
 
 db_client = pymongo.MongoClient("mongodb+srv://farkaspeter2001:T5YY8ln4FJSVg1Ok@indivproj.4twcz60.mongodb.net/")
