@@ -1,6 +1,4 @@
-using UnityEngine;
-
-public class RadialAttackAttributes : MonoBehaviour
+public class RadialAttackAttributes
 {
     public float damage {  get; set; }
 }
