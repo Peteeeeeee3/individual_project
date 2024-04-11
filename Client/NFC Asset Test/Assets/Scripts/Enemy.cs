@@ -1,5 +1,3 @@
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public enum EnemyType

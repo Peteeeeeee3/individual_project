@@ -1,7 +1,6 @@
 using distriqt.plugins.nfc;
 using System;
 using System.Text.RegularExpressions;
-using UI.Dialogs;
 using UnityEngine;
 
 public class RegisterFigureNFCHandler : MonoBehaviour
