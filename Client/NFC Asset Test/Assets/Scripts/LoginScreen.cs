@@ -183,6 +183,7 @@ public class LoginScreen : MonoBehaviour
             string message = "VALIDATE USER\n" + 
                 usernameText.text + "\n" + 
                 passwordText.text;
+
             Connection.QueueMessage(message);
         }
     }
@@ -222,6 +223,7 @@ public class LoginScreen : MonoBehaviour
             string message = "REGISTER USER\n" + 
                 usernameText.text + "\n" + 
                 passwordText.text;
+
             Connection.QueueMessage(message);
         }
     }

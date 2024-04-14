@@ -40,9 +40,6 @@ public static class StaticNFCHandler
 
         targetType = type;
         nfcTarget = target;
-
-        string debugText = targetType == NFC_TARGET_TYPE.GAME_NFC_HANDLER ? "GAME_NFC_HANDLER" : "MAIN_MENU_NFC_HANDLER";
-        Connection.QueueMessage("Control claimed by: " + debugText);
     }
 
     /// <summary>

@@ -73,8 +73,6 @@ public class PlayerController : MonoBehaviour
         blueCube.position = outOfBoundsPos;
         greyCube.position = outOfBoundsPos;
         creamCube.position = outOfBoundsPos;
-
-        Connection.QueueMessage("PlayerController Start() called!");
     }
 
     // Update is called once per frame
@@ -210,7 +208,6 @@ public class PlayerController : MonoBehaviour
         if (!NfcMessanger.IsRead &&
             NfcMessanger.Initialized)
         {
-            Connection.QueueMessage("2: IsRead == " + NfcMessanger.IsRead.ToString() + " Initialized == " + NfcMessanger.Initialized.ToString());
             // assign new player model based on 
             bool noError = true;
             switch (NfcMessanger.Figure.type)
@@ -239,7 +236,7 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("Invalid or unsupported player model");
                     break;
             }
-            Connection.QueueMessage("noError == " + noError.ToString());
+
             // update all active player information only if all data is valid for use
             if (noError)
             {

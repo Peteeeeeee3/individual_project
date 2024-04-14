@@ -103,21 +103,14 @@ public class GameNFCHandler : MonoBehaviour
         if (data[dataOffset + 1].Equals("BLUE"))
         {
             type = PlayerType.BLUE;
-            Connection.QueueMessage("BLUE");
         }
         else if (data[dataOffset + 1].Equals("GREY"))
         {
             type = PlayerType.GREY;
-            Connection.QueueMessage("GREY");
         }
         else if (data[dataOffset + 1].Equals("CREAM"))
         {
             type = PlayerType.CREAM;
-            Connection.QueueMessage("CREAM");
-        }
-        else
-        {
-            Connection.QueueMessage("ERROR");
         }
 
         Figure update = new Figure(
@@ -143,6 +136,6 @@ public class GameNFCHandler : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        Connection.Unsubscribe("NFCHANDLER");
+        Connection.Unsubscribe(ConnectionIdString);
     }
 }

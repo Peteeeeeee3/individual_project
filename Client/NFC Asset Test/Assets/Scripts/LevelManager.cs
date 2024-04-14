@@ -223,6 +223,6 @@ public class LevelManager : MonoBehaviour
     /// </summary>
     private void OnDestroy()
     {
-        Connection.Unsubscribe("LEVELMANAGER");
+        Connection.Unsubscribe(ConnectionIdString);
     }
 }

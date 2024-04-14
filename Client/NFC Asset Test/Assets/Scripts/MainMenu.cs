@@ -59,6 +59,10 @@ public class MainMenu : MonoBehaviour
     private List<string> FiguresInfo = new List<string>();
     private bool FigureInfoReady = false;
     private int CurrentlyDisplayedFigureId = -1;
+    private bool FigureRegisterSuccess = false;
+    private bool FigureRegisterFail = false;
+    private bool FigureAlreadyOwned = false;
+    private bool FailedToRetrieveFigures = false;
 
     // Start is called before the first frame update
     void Start()
@@ -75,6 +79,30 @@ public class MainMenu : MonoBehaviour
         {
             SetupFiguresListItems();
             FigureInfoReady = false;
+        }
+
+        if (FigureRegisterSuccess)
+        {
+            RegisterFigureSuccessDialog.Show();
+            FigureRegisterSuccess = false;
+        }
+
+        if (FigureRegisterFail)
+        {
+            RegisterFigureFailedDialog.Show();
+            FigureRegisterFail = false;
+        }
+
+        if (FigureAlreadyOwned)
+        {
+            FigureAlreadyOwnedDialog.Show();
+            FigureAlreadyOwned = false;
+        }
+
+        if (FailedToRetrieveFigures)
+        {
+            FailedToRetrieveFiguresDialog.Show();
+            FailedToRetrieveFigures = false;
         }
     }
 
@@ -110,7 +138,9 @@ public class MainMenu : MonoBehaviour
         CharactersViewCanvas.blocksRaycasts = true;
 
         // request info of all figures related to user
-        string message = "GET FIGURES\n" + Globals.ACTIVE_USER_ID;
+        string message = "GET FIGURES\n" 
+            + Globals.ACTIVE_USER_ID;
+
         Connection.QueueMessage(message);
     }
 
@@ -176,7 +206,7 @@ public class MainMenu : MonoBehaviour
     {
         if (figuresInfo[0].Equals("ERROR FIGURES"))
         {
-            FailedToRetrieveFiguresDialog.Show();
+            FailedToRetrieveFigures = true;
         }
         else
         {
@@ -194,10 +224,7 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void OnFigureRegistered()
     {
-        // do everyhing the backbutton does
-        OnRFBackButtonClicked();
-
-        RegisterFigureSuccessDialog.Show();
+        FigureRegisterSuccess = true;
     }
 
     /// <summary>
@@ -205,7 +232,7 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void OnFigureRegisterFailed()
     {
-        RegisterFigureFailedDialog.Show();
+        FigureRegisterFail = true;
     }
 
     /// <summary>
@@ -213,7 +240,7 @@ public class MainMenu : MonoBehaviour
     /// </summary>
     public void OnFigureAlreadyOwned()
     {
-        FigureAlreadyOwnedDialog.Show();
+        FigureAlreadyOwned = true;
     }
 
     /// <summary>

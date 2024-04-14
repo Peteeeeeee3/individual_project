@@ -13,6 +13,8 @@ public static class Connection
     private static IPAddress serverIP = IPAddress.Parse(serverAddress);
     private static int serverPort = 20111;
 
+    private static volatile bool messageResponseReceived = false;
+
     private static TcpClient client;
     private static Thread receivingThread;
     private static Thread sendingThread;
@@ -73,7 +75,6 @@ public static class Connection
             catch (Exception ex)
             {
                 Debug.Log($"Error in receiving message: {ex.Message}");
-                outboundMessageQueue.Enqueue(ex.Message);
             }
         }
     }
@@ -89,7 +90,6 @@ public static class Connection
             if (inboundMessageQueue.Count == 0) { continue; }
 
             string receivedMessage = inboundMessageQueue.Dequeue();
-            Connection.QueueMessage("DEBUG\nInbound Message: " + receivedMessage);
             try
             {
                 // check for successful message reception
@@ -157,11 +157,12 @@ public static class Connection
                         ((LoginScreen)monoBehaviour).OnUserRegistered(false);
                     }
                 }
+
+                messageResponseReceived = true;
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
-                QueueMessage(e.Message);
             }
         }
     }
@@ -174,7 +175,18 @@ public static class Connection
         try
         {
             receivingThread.Abort();
+            processingThread.Abort();
             sendingThread.Abort();
+            
+            while (receivingThread.IsAlive ||
+                processingThread.IsAlive ||
+                sendingThread.IsAlive) 
+            { 
+                // Wait until all threads have finished.
+                // Needed to ensure no exceptions are hit causing errors when logging in again.
+                // Likely not the prettiest solution, but should get the job done.
+            }
+
             client.Close();
             Debug.Log("Connection closed.");
         }
@@ -207,7 +219,13 @@ public static class Connection
                 string message = outboundMessageQueue.Dequeue();
                 NetworkStream stream = client.GetStream();
                 byte[] data = Encoding.UTF8.GetBytes(message);
-                stream.Write(data, 0, data.Length);
+                messageResponseReceived = false;
+
+                while (!messageResponseReceived)
+                {
+                    stream.Write(data, 0, data.Length);
+                    Thread.Sleep(250);
+                }
             }
         }
     }
