@@ -49,7 +49,6 @@ public class GameNFCHandler : MonoBehaviour
             }
             tempText = StringToASCII(tempText);
             OnRequestFigureData(tempText);
-            DebugText1.SetText(tempText);
         }
     }
 
