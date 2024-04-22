@@ -57,7 +57,7 @@ public class LevelManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        EnemyCountText.SetText("Required Enemies Left: " + highlightedEnemies.Count + "       Total Enemies Left: " + enemies.Count + highlightedEnemies.Count);
+        EnemyCountText.SetText("Required Enemies Left: " + highlightedEnemies.Count.ToString() + "       Total Enemies Left: " + (enemies.Count + highlightedEnemies.Count).ToString());
     
         if (highlightedEnemies.Count == 0 && !exitPortal)
         {
